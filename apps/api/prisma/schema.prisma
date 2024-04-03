@@ -10,12 +10,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sample {
-  id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Users{
+  id Int @id @unique @default(autoincrement())
+  username String
+  email String @unique
+  password String
+  role String @default("customers")
+  referrallCode String
+  points String
+  createAt DateTime @default(now())
+  discount Discounts?
+  dashboard Dashboards?
+  reviews Reviews[]
+  transactions Transactions[]
+}
 
-  @@map("samples") // if you want to use snake_case format
+model Discounts{
+  id Int @id @unique @default(autoincrement())
+  userId Int @unique
+  value String
+  discountCategory String @default("point")
+  createAt DateTime @default(now())
+  expriredAt DateTime 
+  user Users? @relation(fields: [userId], references: [id])
+}
+
+model Transactions {
+  id Int @id @unique @default(autoincrement())
+  userId Int 
+  ticketId Int @unique
+  transactionDate DateTime @default(now())
+  total Int
+  ticket Tickets @relation(fields: [ticketId], references: [id])
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Tickets{
+  id Int @id @unique @default(autoincrement())
+  eventId Int
+  ticketType String @default("reguler")
+  price Int 
+  sold Boolean @default(false)
+  event Events @relation(fields: [eventId], references: [id])
+  transaction Transactions?
+}
+
+model Dashboards {
+  id Int @id @unique @default(autoincrement())
+  userId Int @unique
+  eventCount Int
+  attendeeCount Int
+  transactionCount Int
+  user Users @relation(fields: [userId], references: [id])
+  event Events[]
+}
+
+model Events{
+  id Int @id @unique @default(autoincrement())
+  dashboardId Int @unique
+  eventName String
+  price Int
+  date DateTime
+  time String
+  location String
+  description String
+  AvailableTicket String 
+  soldQuantity Int
+  eventType String @default("paid")
+  categoryId Int
+  dashboard Dashboards @relation(fields: [dashboardId], references: [id])
+  category Categorys @relation(fields: [categoryId], references: [id])
+  promotion Promotions[]
+  reviews Reviews[]
+  ticket Tickets[]
+}
+
+model Categorys{
+  id Int @id @default(autoincrement())
+  categoryName String
+  events Events[]
+}
+
+model Promotions {
+  id Int @id @unique @default(autoincrement())
+  eventId Int
+  discount String
+  startDate DateTime @default(now())
+  endDate DateTime
+  event Events @relation(fields: [eventId], references: [id])
+}
+
+model Reviews{
+  id Int @id @default(autoincrement())
+  eventId Int @unique
+  userId Int @unique
+  rating Int @default(5)
+  feedBack String
+  event Events @relation(fields: [eventId], references: [id])
+  user Users @relation(fields: [userId], references: [id])
 }
