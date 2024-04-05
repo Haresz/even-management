@@ -75,7 +75,7 @@ model Events{
   location String
   description String
   AvailableTicket String 
-  soldQuantity Int
+  soldQuantity Int @default(0)
   eventType String @default("paid")
   categoryId Int
   dashboard Dashboards @relation(fields: [dashboardId], references: [id])

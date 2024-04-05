@@ -31,6 +31,11 @@
       "pre-commit": "npx lint-staged"
     }
   },
+  "lint-staged": {
+    "**/*.{js,ts,tsx}": [
+      "yarn format"
+    ]
+  },
   "dependencies": {
     "cosmiconfig": "^9.0.0"
   }
