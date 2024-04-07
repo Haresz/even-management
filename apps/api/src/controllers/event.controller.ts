@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
-const addEvent = async (req: Request, res: Response) => {
-  const {
+const addEvent = async (req: Request, res: Response, next: NextFunction) => {
+  let {
     eventName,
     price,
     date,
@@ -29,6 +29,7 @@ const addEvent = async (req: Request, res: Response) => {
         message: 'input invalid',
       });
     }
+    date = new Date(date);
     const repoAddEvent = await prisma.events.create({
       data: {
         dashboardId: parseInt(req.params.id),
@@ -42,12 +43,8 @@ const addEvent = async (req: Request, res: Response) => {
         categoryId,
       },
     });
-    return res.status(201).send({
-      status: 201,
-      success: true,
-      message: 'add event successfully',
-      data: repoAddEvent,
-    });
+
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -130,8 +127,8 @@ const updateEvents = async (req: Request, res: Response) => {
         categoryId,
       },
     });
-    return res.status(204).send({
-      status: 204,
+    return res.status(201).send({
+      status: 201,
       success: true,
       message: 'Event updated successfully',
       data: repoUpdateEvent,
@@ -148,22 +145,49 @@ const updateEvents = async (req: Request, res: Response) => {
 
 const deleteEvents = async (req: Request, res: Response) => {
   try {
-    if (!req.params.id) {
+    const repoDetailEvents = await prisma.events.findUnique({
+      where: { id: parseFloat(req.params.id) },
+    });
+    if (!req.params.id || !repoDetailEvents) {
       return res.status(401).send({
         status: 401,
-        success: true,
+        success: false,
         message: 'invalid input',
       });
     }
     const repoDelete = await prisma.events.delete({
       where: { id: parseFloat(req.params.id) },
     });
-    return res.status(204).send({
-      status: 204,
+    return res.status(201).send({
+      status: 201,
       success: true,
       message: 'Event Delete successfully',
       data: repoDelete,
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
+const findIdEvent = async (req: Request, res: Response, next: NextFunction) => {
+  const { eventId } = req.params;
+  try {
+    const repoFindId = await prisma.events.findUnique({
+      where: { id: parseInt(eventId) },
+    });
+    if (!repoFindId) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Event not found',
+      });
+    }
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -180,4 +204,5 @@ export default {
   addEvent,
   updateEvents,
   deleteEvents,
+  findIdEvent,
 };

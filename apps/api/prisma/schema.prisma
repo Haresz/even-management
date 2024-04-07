@@ -49,6 +49,7 @@ model Tickets{
   id Int @id @unique @default(autoincrement())
   eventId Int
   ticketType String @default("reguler")
+  AvailableTicket Int
   price Int 
   sold Boolean @default(false)
   event Events @relation(fields: [eventId], references: [id])
@@ -58,9 +59,9 @@ model Tickets{
 model Dashboards {
   id Int @id @unique @default(autoincrement())
   userId Int @unique
-  eventCount Int
-  attendeeCount Int
-  transactionCount Int
+  eventCount Int @default(0)
+  attendeeCount Int @default(0)
+  transactionCount Int @default(0)
   user Users @relation(fields: [userId], references: [id])
   event Events[]
 }
@@ -74,10 +75,11 @@ model Events{
   time String
   location String
   description String
-  AvailableTicket String 
+  AvailableTicket Int @default(0)
   soldQuantity Int @default(0)
   eventType String @default("paid")
   categoryId Int
+  published Boolean @default(false)
   dashboard Dashboards @relation(fields: [dashboardId], references: [id])
   category Categorys @relation(fields: [categoryId], references: [id])
   promotion Promotions[]

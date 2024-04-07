@@ -9,6 +9,8 @@ import express, {
 import cors from 'cors';
 import { PORT } from './config';
 import userRouter from './routers/user.router';
+import eventRouter from './routers/event.router';
+import ticketRouter from './routers/ticket.router';
 
 function configureApp(): Express {
   const app = express();
@@ -39,6 +41,8 @@ function handleError(app: Express): void {
 
 function setRoutes(app: Express): void {
   app.use('/user', userRouter);
+  app.use('/events', eventRouter);
+  app.use('/ticket', ticketRouter);
 }
 
 function startServer(app: Express): void {
@@ -50,7 +54,6 @@ function startServer(app: Express): void {
 export function main() {
   const app = configureApp();
   handleError(app);
-  app.use('/api', userRouter);
   setRoutes(app);
   startServer(app);
 }
