@@ -3,7 +3,6 @@ import prisma from '../prisma';
 
 export const addDahsboard = async (req: Request, res: Response) => {
   try {
-    //   cek id user (opsional)
     if (!req.params.id) {
       return res.status(401).send({
         status: 401,
@@ -40,7 +39,7 @@ export const addeventCount = async (req: Request, res: Response) => {
       status: 201,
       success: true,
       message: 'add event successfully',
-      data: repoAddEventCount,
+      data: { dhasboard: repoAddEventCount, event: req.body },
     });
   } catch (error) {
     console.log(error);

@@ -6,6 +6,6 @@ const userRouter = Router();
 
 userRouter.post('/register', userController.registerUser);
 userRouter.post('/login', userController.loginUser);
-userRouter.post('/switch/:id', addDahsboard);
+userRouter.post('/switch/:id', userController.findUniqeId, addDahsboard);
 
 export default userRouter;

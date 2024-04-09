@@ -15,12 +15,7 @@ const addTicket = async (req: Request, res: Response, next: NextFunction) => {
     const repoAddTicket = await prisma.tickets.create({
       data: { eventId: parseInt(eventId), ticketType, price, AvailableTicket },
     });
-    return res.status(201).send({
-      status: 201,
-      success: true,
-      message: 'Ticket added successfully',
-      data: repoAddTicket,
-    });
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -31,7 +26,11 @@ const addTicket = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const updateTicket = async (req: Request, res: Response) => {
+const updateTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id } = req.params;
   const { ticketType, price, AvailableTicket } = req.body;
   try {
@@ -46,12 +45,7 @@ const updateTicket = async (req: Request, res: Response) => {
       where: { id: parseInt(id) },
       data: { ticketType, price, AvailableTicket },
     });
-    return res.status(201).send({
-      status: 201,
-      success: true,
-      message: 'Ticket updated successfully',
-      data: repoUpdateTicket,
-    });
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -62,7 +56,11 @@ const updateTicket = async (req: Request, res: Response) => {
   }
 };
 
-const deleteTicket = async (req: Request, res: Response) => {
+const deleteTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id } = req.params;
   try {
     if (!id) {
@@ -75,12 +73,35 @@ const deleteTicket = async (req: Request, res: Response) => {
     const repoDeleteTicket = await prisma.tickets.delete({
       where: { id: parseInt(id) },
     });
-    return res.status(201).send({
-      status: 201,
-      success: true,
-      message: 'Ticket delete successfully',
-      data: repoDeleteTicket,
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
     });
+  }
+};
+
+const deleteTicketEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Invalid input',
+      });
+    }
+    const repoDeleteTicketEvent = await prisma.tickets.deleteMany({
+      where: { eventId: parseInt(id) },
+    });
+    next();
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -123,5 +144,6 @@ export default {
   addTicket,
   updateTicket,
   deleteTicket,
+  deleteTicketEvent,
   findUniqeTicket,
 };

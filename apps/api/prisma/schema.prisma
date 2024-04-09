@@ -51,7 +51,7 @@ model Tickets{
   ticketType String @default("reguler")
   AvailableTicket Int
   price Int 
-  sold Boolean @default(false)
+  sold Int @default(0)
   event Events @relation(fields: [eventId], references: [id])
   transaction Transactions?
 }
@@ -70,6 +70,7 @@ model Events{
   id Int @id @unique @default(autoincrement())
   dashboardId Int @unique
   eventName String
+  image String
   price Int
   date DateTime
   time String

@@ -2,16 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const addEvent = async (req: Request, res: Response, next: NextFunction) => {
-  let {
-    eventName,
-    price,
-    date,
-    time,
-    location,
-    description,
-    AvailableTicket,
-    categoryId,
-  } = req.body;
+  let { eventName, price, date, time, location, description, categoryId } =
+    req.body;
+  const { file } = req;
   try {
     if (
       !eventName ||
@@ -20,8 +13,8 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
       !time ||
       !location ||
       !description ||
-      !AvailableTicket ||
-      !categoryId
+      !categoryId ||
+      !file
     ) {
       return res.status(401).send({
         status: 401,
@@ -34,13 +27,13 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
       data: {
         dashboardId: parseInt(req.params.id),
         eventName,
-        price,
+        image: file.path,
+        price: parseInt(price),
         date,
         time,
         location,
         description,
-        AvailableTicket,
-        categoryId,
+        categoryId: parseInt(categoryId),
       },
     });
 
@@ -78,7 +71,9 @@ const getDetailEvents = async (req: Request, res: Response) => {
   try {
     const repoDetailEvents = await prisma.events.findUnique({
       where: { id: parseFloat(req.params.id) },
+      include: { ticket: true },
     });
+
     return res.status(200).send({
       status: 200,
       success: true,
@@ -115,7 +110,7 @@ const updateEvents = async (req: Request, res: Response) => {
       });
     }
     const repoUpdateEvent = await prisma.events.update({
-      where: { id: parseFloat(req.params.id) },
+      where: { id: parseInt(req.params.id) },
       data: {
         eventName,
         price,
@@ -143,20 +138,51 @@ const updateEvents = async (req: Request, res: Response) => {
   }
 };
 
-const deleteEvents = async (req: Request, res: Response) => {
+const updateAvailableTicket = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { eventId } = req.params;
+  const { ticketType, price, AvailableTicket } = req.body;
   try {
-    const repoDetailEvents = await prisma.events.findUnique({
-      where: { id: parseFloat(req.params.id) },
-    });
-    if (!req.params.id || !repoDetailEvents) {
+    if (!eventId || (!price && !AvailableTicket && !ticketType)) {
       return res.status(401).send({
         status: 401,
         success: false,
-        message: 'invalid input',
+        message: 'Invalid input',
       });
     }
+    const agreration: any = await prisma.tickets.aggregate({
+      where: { eventId: parseInt(eventId) },
+      _sum: {
+        AvailableTicket: true,
+      },
+    });
+    const repoUpdateAvailableTicket = await prisma.events.update({
+      where: { id: parseInt(eventId) },
+      data: { AvailableTicket: agreration._sum.AvailableTicket },
+    });
+
+    return res.status(201).send({
+      status: 201,
+      success: true,
+      data: req.body,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
+const deleteEvents = async (req: Request, res: Response) => {
+  try {
     const repoDelete = await prisma.events.delete({
-      where: { id: parseFloat(req.params.id) },
+      where: { id: parseInt(req.params.id) },
     });
     return res.status(201).send({
       status: 201,
@@ -175,10 +201,10 @@ const deleteEvents = async (req: Request, res: Response) => {
 };
 
 const findIdEvent = async (req: Request, res: Response, next: NextFunction) => {
-  const { eventId } = req.params;
+  const { id } = req.params;
   try {
     const repoFindId = await prisma.events.findUnique({
-      where: { id: parseInt(eventId) },
+      where: { id: parseInt(id) },
     });
     if (!repoFindId) {
       return res.status(401).send({
@@ -198,6 +224,36 @@ const findIdEvent = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const publishEvent = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Event not found',
+      });
+    }
+    const repoOnPublish = await prisma.events.update({
+      where: { id: parseInt(id) },
+      data: { published: true },
+    });
+    return res.status(201).send({
+      status: 201,
+      success: true,
+      message: 'Event Publish successfully',
+      data: repoOnPublish,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   getAllEvents,
   getDetailEvents,
@@ -205,4 +261,6 @@ export default {
   updateEvents,
   deleteEvents,
   findIdEvent,
+  publishEvent,
+  updateAvailableTicket,
 };

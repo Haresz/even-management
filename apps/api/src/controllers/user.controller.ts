@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const registerUser = async (req: Request, res: Response) => {
@@ -67,7 +67,32 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+const findUniqeId = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  try {
+    const repoFindId = await prisma.users.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!id || !repoFindId) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'invalid email or password',
+      });
+    }
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
+  findUniqeId,
 };
