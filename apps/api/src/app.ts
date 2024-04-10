@@ -11,6 +11,7 @@ import { PORT } from './config';
 import userRouter from './routers/user.router';
 import eventRouter from './routers/event.router';
 import ticketRouter from './routers/ticket.router';
+import reviewRouter from './routers/review.router';
 
 function configureApp(): Express {
   const app = express();
@@ -43,6 +44,7 @@ function setRoutes(app: Express): void {
   app.use('/user', userRouter);
   app.use('/events', eventRouter);
   app.use('/ticket', ticketRouter);
+  app.use('/review', reviewRouter);
 }
 
 function startServer(app: Express): void {
