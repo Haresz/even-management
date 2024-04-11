@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 export const addDahsboard = async (req: Request, res: Response) => {
@@ -50,3 +50,20 @@ export const addeventCount = async (req: Request, res: Response) => {
     });
   }
 };
+
+// export const dahsboardTransactionController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   const { userId } = req.params;
+//   try {
+//     const agreration = await prisma.transactions.aggregate({
+//       where: { ticket: include },
+//     });
+//     const repoAddDahsBoardTransaction = await prisma.dashboards.update({
+//       where: { userId: parseInt(userId) },
+//       data: { attendeeCount, transactionCount },
+//     });
+//   } catch (error) {}
+// };

@@ -254,6 +254,53 @@ const publishEvent = async (req: Request, res: Response) => {
   }
 };
 
+const eventTransaction = async (req: Request, res: Response) => {
+  try {
+    const { ticketId } = req.params;
+    // Find Ticket
+    const repoFindTicket: any = await prisma.tickets.findUnique({
+      where: { id: parseInt(ticketId) },
+    });
+    // Find Stock
+    const agreration: any = await prisma.tickets.aggregate({
+      where: { eventId: parseInt(repoFindTicket.eventId) },
+      _sum: {
+        AvailableTicket: true,
+        sold: true,
+      },
+    });
+    // Update Event
+    const repoEventUpdate: any = await prisma.events.update({
+      where: { id: parseInt(repoFindTicket.eventId) },
+      data: {
+        AvailableTicket: agreration._sum.AvailableTicket,
+        soldQuantity: agreration._sum.sold,
+      },
+    });
+    // Update Dashboard
+    const repoUpdateDhasboard = await prisma.dashboards.update({
+      where: {
+        id: parseInt(repoEventUpdate.dashboardId),
+      },
+      data: {
+        transactionCount: +1,
+      },
+    });
+    return res.status(201).send({
+      status: 201,
+      success: true,
+      message: 'trasaction success full',
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   getAllEvents,
   getDetailEvents,

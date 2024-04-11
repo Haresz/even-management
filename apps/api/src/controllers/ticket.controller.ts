@@ -140,10 +140,40 @@ const findUniqeTicket = async (
   }
 };
 
+const ticketTransaction = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { ticketId } = req.params;
+    const repoFindTicket: any = await prisma.tickets.findUnique({
+      where: { id: parseInt(ticketId) },
+    });
+    const repoUpdateTransaction = await prisma.tickets.update({
+      where: { id: parseInt(ticketId) },
+      data: {
+        AvailableTicket: parseInt(repoFindTicket?.AvailableTicket) - 1,
+        sold: parseInt(repoFindTicket.sold) + 1,
+      },
+    });
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   addTicket,
   updateTicket,
   deleteTicket,
   deleteTicketEvent,
   findUniqeTicket,
+  ticketTransaction,
 };

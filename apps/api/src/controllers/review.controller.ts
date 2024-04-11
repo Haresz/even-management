@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const addreview = async (req: Request, res: Response) => {
@@ -144,10 +144,40 @@ const getReviewEvent = async (req: Request, res: Response) => {
   }
 };
 
+const findIdReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { id } = req.params;
+  try {
+    const repoFindId = await prisma.reviews.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!id || !repoFindId) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Invalid id',
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   addreview,
   getAllReview,
   getReviewEvent,
   updateReview,
   deleteReview,
+  findIdReview,
 };
