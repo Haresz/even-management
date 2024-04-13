@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import { Providers } from './providers';
+import { fonts } from './fonts';
 
-const inter = Inter({ subsets: ['latin'] });
+// These styles apply to every route in the application
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,10 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
-        <Footer />
+      <body className={fonts.poppins.variable}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

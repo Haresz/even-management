@@ -1,95 +1,80 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import {
+  Heading,
+  HStack,
+  Text,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Image,
+} from '@chakra-ui/react';
+import {
+  Coin,
+  SealPercent,
+  SignOut,
+  Ticket,
+  UserCircle,
+} from '@phosphor-icons/react/dist/ssr';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className="h-screen">
+      <HStack
+        className="bg-redDark"
+        justifyContent={'space-between'}
+        w="100%"
+        py={4}
+        px={16}
+        color="white"
+      >
+        <Heading as="h4" size="md">
+          EventHive
+        </Heading>
+        <HStack gap={8}>
+          <Link href={''}>
+            <HStack>
+              <Ticket size={32} />
+              <Text fontSize="lg" fontWeight={'semibold'}>
+                {' '}
+                Tickets
+              </Text>
+            </HStack>
+          </Link>
+          <Menu>
+            <MenuButton aria-label="Options">
+              <UserCircle size={38} />
+            </MenuButton>
+            <MenuList color={'black'}>
+              <MenuItem>
+                <Coin weight="light" size={32} />
+                <Text ml={3} fontSize="lg">
+                  {' '}
+                  100
+                </Text>
+              </MenuItem>
+              <MenuItem>
+                <SealPercent weight="light" size={32} />
+                <Text ml={3} fontSize="lg">
+                  {' '}
+                  10%
+                </Text>
+              </MenuItem>
+              <hr />
+              <MenuItem>
+                <SignOut size={32} />
+                <Text ml={3} fontSize="lg" fontWeight={'semibold'}>
+                  {' '}
+                  LogOut
+                </Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </HStack>
+      </HStack>
+      <div className="bg-heroLanding bg-center bg-auto h-[700px] w-full">
+        COBAK
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }
