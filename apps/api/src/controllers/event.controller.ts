@@ -91,16 +91,8 @@ const getDetailEvents = async (req: Request, res: Response) => {
 };
 
 const updateEvents = async (req: Request, res: Response) => {
-  const {
-    eventName,
-    price,
-    date,
-    time,
-    location,
-    description,
-    AvailableTicket,
-    categoryId,
-  } = req.body;
+  const { eventName, price, date, time, location, description, categoryId } =
+    req.body;
   try {
     if (!req.body || !req.params.id) {
       return res.status(401).send({
@@ -118,7 +110,6 @@ const updateEvents = async (req: Request, res: Response) => {
         time,
         location,
         description,
-        AvailableTicket,
         categoryId,
       },
     });
@@ -256,19 +247,24 @@ const publishEvent = async (req: Request, res: Response) => {
 
 const eventTransaction = async (req: Request, res: Response) => {
   try {
-    const { ticketId } = req.params;
-    // Find Ticket
-    const repoFindTicket: any = await prisma.tickets.findUnique({
-      where: { id: parseInt(ticketId) },
-    });
-    // Find Stock
-    const agreration: any = await prisma.tickets.aggregate({
-      where: { eventId: parseInt(repoFindTicket.eventId) },
-      _sum: {
-        AvailableTicket: true,
-        sold: true,
-      },
-    });
+    let agreration: any;
+    let repoFindTicket: any;
+    await Promise.all(
+      req.body.map(async (value: any) => {
+        // Find Ticket
+        repoFindTicket = await prisma.tickets.findUnique({
+          where: { id: parseInt(value.ticketId) },
+        });
+        // Find Stock
+        agreration = await prisma.tickets.aggregate({
+          where: { eventId: parseInt(repoFindTicket.eventId) },
+          _sum: {
+            AvailableTicket: true,
+            sold: true,
+          },
+        });
+      }),
+    );
     // Update Event
     const repoEventUpdate: any = await prisma.events.update({
       where: { id: parseInt(repoFindTicket.eventId) },
@@ -278,12 +274,19 @@ const eventTransaction = async (req: Request, res: Response) => {
       },
     });
     // Update Dashboard
+
+    const repoEventDhasboardTransaction: any = await prisma.events.aggregate({
+      where: { dashboardId: parseInt(repoEventUpdate.dashboardId) },
+      _sum: {
+        soldQuantity: true,
+      },
+    });
     const repoUpdateDhasboard = await prisma.dashboards.update({
       where: {
         id: parseInt(repoEventUpdate.dashboardId),
       },
       data: {
-        transactionCount: +1,
+        attendeeCount: repoEventDhasboardTransaction._sum.soldQuantity,
       },
     });
     return res.status(201).send({
@@ -310,4 +313,5 @@ export default {
   findIdEvent,
   publishEvent,
   updateAvailableTicket,
+  eventTransaction,
 };

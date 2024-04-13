@@ -38,10 +38,10 @@ model Discounts{
 model Transactions {
   id Int @id @unique @default(autoincrement())
   userId Int 
-  ticketId Int @unique
   transactionDate DateTime @default(now())
   total Int
-  ticket Tickets @relation(fields: [ticketId], references: [id])
+  createAt DateTime @default(now())
+  ticket TicketsTransaction[]
   user Users @relation(fields: [userId], references: [id])
 }
 
@@ -53,7 +53,16 @@ model Tickets{
   price Int 
   sold Int @default(0)
   event Events @relation(fields: [eventId], references: [id])
-  transaction Transactions?
+  transaction TicketsTransaction[]
+}
+
+model TicketsTransaction {
+  ticket Tickets @relation(fields: [ticketId], references: [id])
+  ticketId Int 
+  transaction Transactions @relation(fields: [transactionId], references: [id])
+  transactionId Int 
+
+  @@id([ticketId,transactionId])
 }
 
 model Dashboards {
@@ -81,6 +90,7 @@ model Events{
   eventType String @default("paid")
   categoryId Int
   published Boolean @default(false)
+  createAt DateTime @default(now())
   dashboard Dashboards @relation(fields: [dashboardId], references: [id])
   category Categorys @relation(fields: [categoryId], references: [id])
   promotion Promotions[]

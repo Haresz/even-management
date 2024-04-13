@@ -6,34 +6,70 @@ const addTransaction = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { ticketId, userId } = req.params;
+  const { userId } = req.params;
   try {
-    const repoFindTicket: any = await prisma.tickets.findUnique({
-      where: { id: parseInt(ticketId) },
-    });
-    if (!repoFindTicket) {
-      return res.status(401).send({
-        status: 401,
-        success: false,
-        message: 'Invalid input',
+    console.log(req.body);
+    let total = 0;
+
+    // Menghitung total harga dari semua tiket
+    for (const value of req.body) {
+      const repoFindTicket: any = await prisma.tickets.findUnique({
+        where: { id: parseInt(value.ticketId) },
       });
-    }
-    const repoAddTransaction = await prisma.transactions.create({
-      data: {
-        ticketId: parseInt(ticketId),
-        userId: parseInt(userId),
-        total: parseInt(repoFindTicket?.price),
-      },
-    });
-    if (!repoAddTransaction) {
-      return res.status(401).send({
-        status: 401,
-        success: false,
-        message: 'Invalid input',
-      });
+      if (!repoFindTicket) {
+        throw new Error('Invalid input');
+      }
+      console.log(total, repoFindTicket.price, value.count);
+      total += repoFindTicket.price * value.count;
     }
 
+    console.log(total);
+    // Membuat transaksi
+    const repoAddTransaction = await prisma.transactions.create({
+      data: {
+        userId: parseInt(userId),
+        total: total,
+      },
+    });
+
+    // Mengaitkan setiap tiket dengan transaksi yang sama
+    await Promise.all(
+      req.body.map(async (value: any) => {
+        const repoTicketTransaction = await prisma.ticketsTransaction.create({
+          data: {
+            ticketId: value.ticketId,
+            transactionId: repoAddTransaction.id,
+          },
+        });
+        if (!repoTicketTransaction) {
+          throw new Error('Invalid input');
+        }
+      }),
+    );
+
     next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: error,
+    });
+  }
+};
+
+const getAllTransactionsUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const repoGetAllTransactionsUser = await prisma.transactions.findMany({
+      where: { userId: parseInt(userId) },
+    });
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'get all transactions successfuly',
+      data: repoGetAllTransactionsUser,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -46,4 +82,5 @@ const addTransaction = async (
 
 export default {
   addTransaction,
+  getAllTransactionsUser,
 };

@@ -26,7 +26,7 @@ eventRouter.patch(
   eventController.updateEvents,
 );
 eventRouter.patch(
-  'publish/:id',
+  '/publish/:id',
   eventController.findIdEvent,
   eventController.publishEvent,
 );

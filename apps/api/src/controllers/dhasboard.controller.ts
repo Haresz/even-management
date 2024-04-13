@@ -51,19 +51,25 @@ export const addeventCount = async (req: Request, res: Response) => {
   }
 };
 
-// export const dahsboardTransactionController = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   const { userId } = req.params;
-//   try {
-//     const agreration = await prisma.transactions.aggregate({
-//       where: { ticket: include },
-//     });
-//     const repoAddDahsBoardTransaction = await prisma.dashboards.update({
-//       where: { userId: parseInt(userId) },
-//       data: { attendeeCount, transactionCount },
-//     });
-//   } catch (error) {}
-// };
+export const getDashboardUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const repoGetDashboardUser = await prisma.dashboards.findUnique({
+      where: { userId: parseInt(userId) },
+      include: { user: true, event: true },
+    });
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'get dashboard successfuly',
+      data: repoGetDashboardUser,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};

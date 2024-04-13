@@ -146,17 +146,21 @@ const ticketTransaction = async (
   next: NextFunction,
 ) => {
   try {
-    const { ticketId } = req.params;
-    const repoFindTicket: any = await prisma.tickets.findUnique({
-      where: { id: parseInt(ticketId) },
-    });
-    const repoUpdateTransaction = await prisma.tickets.update({
-      where: { id: parseInt(ticketId) },
-      data: {
-        AvailableTicket: parseInt(repoFindTicket?.AvailableTicket) - 1,
-        sold: parseInt(repoFindTicket.sold) + 1,
-      },
-    });
+    await Promise.all(
+      req.body.map(async (value: any) => {
+        const repoFindTicket: any = await prisma.tickets.findUnique({
+          where: { id: value.ticketId },
+        });
+        const repoUpdateTransaction = await prisma.tickets.update({
+          where: { id: value.ticketId },
+          data: {
+            AvailableTicket:
+              parseInt(repoFindTicket?.AvailableTicket) - value.count,
+            sold: parseInt(repoFindTicket.sold) + value.count,
+          },
+        });
+      }),
+    );
 
     next();
   } catch (error) {
