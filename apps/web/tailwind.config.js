@@ -4,7 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        redPrimary: '#FF204E',
         redDark: '#A0153E',
+        blueDark: '#00224D',
       },
       backgroundImage: {
         heroLanding: "url('../../public/hero-landing.webp')",
