@@ -7,11 +7,9 @@ import ListEvent from '@/components/ListEvent';
 export default function Home() {
   return (
     <div>
-      <Navbar />
       <HeroLanding />
       <MenuCategory />
       <ListEvent />
-      <Footer />
     </div>
   );
 }

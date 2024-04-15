@@ -6,11 +6,12 @@ import {
   TabPanels,
   TabPanel,
   HStack,
-  Card,
   Box,
   Text,
 } from '@chakra-ui/react';
 import React from 'react';
+import SimplePagination from './Pagination';
+import Card from './Card';
 
 export default function ListEvent() {
   return (
@@ -56,6 +57,7 @@ export default function ListEvent() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      <SimplePagination />
     </Box>
   );
 }
