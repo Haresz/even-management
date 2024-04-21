@@ -6,7 +6,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Image,
 } from '@chakra-ui/react';
 import {
   Coin,
@@ -32,7 +31,7 @@ export default function Navbar() {
         EventHive
       </Heading>
       <HStack gap={8}>
-        <Link href={''}>
+        <Link href={'/myticket'}>
           <HStack>
             <Ticket size={32} />
             <Text fontSize="lg" fontWeight={'semibold'}>

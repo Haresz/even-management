@@ -5,15 +5,15 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Heading,
   HStack,
   Text,
   Radio,
   RadioGroup,
   Stack,
 } from '@chakra-ui/react';
-import { ArrowLeft } from '@phosphor-icons/react/dist/ssr';
 import React from 'react';
+import CheckOutHeader from './CheckOutHeader';
+import Btn from '@/components/Btn';
 
 function Method(props: any) {
   return (
@@ -37,16 +37,7 @@ export default function PayMethod(props: any) {
   return (
     <ModalContent>
       <ModalHeader className="text-blueDark border-b-2 border-blueDark">
-        <HStack>
-          <ArrowLeft
-            className="cursor-pointer"
-            onClick={() => props.set(1)}
-            size={24}
-          />
-          <Heading ml={2} as="h3" mr={8} size="md">
-            Check Out
-          </Heading>
-        </HStack>
+        <CheckOutHeader onClick={() => props.set(1)} />
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
@@ -62,20 +53,7 @@ export default function PayMethod(props: any) {
         </RadioGroup>
       </ModalBody>
       <ModalFooter>
-        <Button
-          backgroundColor={'#FF204E'}
-          color={'white'}
-          mt={16}
-          _hover={{
-            color: '#FF204E',
-            backgroundColor: 'white',
-            border: '1px',
-          }}
-          onClick={() => props.set(3)}
-          variant="solid"
-        >
-          <Text fontSize="md">PLACE ORDER</Text>
-        </Button>
+        <Btn title="PLACE ORDER" onClick={() => props.set(3)} />
       </ModalFooter>
     </ModalContent>
   );

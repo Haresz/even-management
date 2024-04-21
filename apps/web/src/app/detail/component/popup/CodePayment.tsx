@@ -1,8 +1,8 @@
+'use client';
 import {
   ModalContent,
   ModalHeader,
   HStack,
-  Heading,
   ModalCloseButton,
   ModalBody,
   ModalFooter,
@@ -10,11 +10,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { ArrowLeft } from '@phosphor-icons/react';
 import { CopySimple } from '@phosphor-icons/react/dist/ssr';
 import React, { useState } from 'react';
 import PopupOrderSumary from './OrderSumary';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+// import { CopyToClipboard } from 'react-copy-to-clipboard';
+import CheckOutHeader from './CheckOutHeader';
+import Btn from '@/components/Btn';
 
 export default function CodePayment(props: any) {
   const [textToCopy, setTextToCopy] = useState('80777082225384814'); // The text you want to copy
@@ -28,16 +29,7 @@ export default function CodePayment(props: any) {
   return (
     <ModalContent>
       <ModalHeader className="text-blueDark border-b-2 border-blueDark">
-        <HStack>
-          <ArrowLeft
-            className="cursor-pointer"
-            onClick={() => props.set(2)}
-            size={24}
-          />
-          <Heading ml={2} as="h3" mr={8} size="md">
-            Check Out
-          </Heading>
-        </HStack>
+        <CheckOutHeader onClick={() => props.set(2)} />
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
@@ -67,32 +59,19 @@ export default function CodePayment(props: any) {
               80777082225384814
             </Text>
             <HStack>
-              <CopyToClipboard text={textToCopy} onCopy={onCopyText}>
+              {/* <CopyToClipboard text={textToCopy} onCopy={onCopyText}>
                 <Text className="font-normal" fontSize={'md'}>
                   Copy
                 </Text>
                 <CopySimple size={32} />
-              </CopyToClipboard>
+              </CopyToClipboard> */}
             </HStack>
           </HStack>
         </VStack>
         <PopupOrderSumary />
       </ModalBody>
       <ModalFooter>
-        <Button
-          backgroundColor={'#FF204E'}
-          color={'white'}
-          mt={16}
-          _hover={{
-            color: '#FF204E',
-            backgroundColor: 'white',
-            border: '1px',
-          }}
-          onClick={() => props.set(3)}
-          variant="solid"
-        >
-          <Text fontSize="md">PLACE ORDER</Text>
-        </Button>
+        <Btn title="CONFIRM" onClick={() => props.set(3)} />
       </ModalFooter>
     </ModalContent>
   );

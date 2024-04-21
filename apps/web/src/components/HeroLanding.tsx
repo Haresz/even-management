@@ -1,9 +1,9 @@
-import { Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 import React from 'react';
 
-export default function HeroLanding() {
+export default function HeroLanding(props: any) {
   return (
-    <div className="bg-heroLanding bg-center bg-auto h-[600px] w-full mt-16 text-white text-center font-extralight">
+    <Box className="bg-heroLanding bg-center bg-auto h-[600px] w-full mt-16 text-white text-center font-extralight">
       <Text pt={16} fontSize="5xl">
         FIND YOUR EVENT
       </Text>
@@ -19,10 +19,11 @@ export default function HeroLanding() {
           color: '#FF204E',
           backgroundColor: 'white',
         }}
+        onClick={props.onClick}
         variant="solid"
       >
         <Text fontSize="xl">CREATE EVENT</Text>
       </Button>
-    </div>
+    </Box>
   );
 }

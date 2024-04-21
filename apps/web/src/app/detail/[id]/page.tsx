@@ -6,7 +6,6 @@ import Detail from '../component/Detail';
 import PriceGetTicket from '../component/PriceGetTicket';
 import Title from '../component/Title';
 import PopUp from '../component/popup/Popup';
-import PayMethod from '../component/popup/PayMethod';
 
 export default function DetailEvent() {
   const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;

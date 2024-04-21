@@ -1,9 +1,10 @@
 import { Heading, Box, Image, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Card() {
   return (
-    <Box width={300} className="text-black">
+    <Link className="w-[300px] text-black" href={'/detail/1'}>
       <Image
         className="object-cover"
         src="/hero-landing.webp"
@@ -20,6 +21,6 @@ export default function Card() {
       <Text py={4} fontSize="lg">
         Jakarta - Indonesia
       </Text>
-    </Box>
+    </Link>
   );
 }

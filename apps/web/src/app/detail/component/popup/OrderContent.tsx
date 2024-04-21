@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import PopupOrderSumary from './OrderSumary';
 import UseDisCount from './UseDisCount';
+import Btn from '@/components/Btn';
 
 export default function OrderContent(props: any) {
   return (
@@ -33,20 +34,7 @@ export default function OrderContent(props: any) {
         <UseDisCount />
       </ModalBody>
       <ModalFooter>
-        <Button
-          backgroundColor={'#FF204E'}
-          color={'white'}
-          mt={4}
-          _hover={{
-            color: '#FF204E',
-            backgroundColor: 'white',
-            border: '1px',
-          }}
-          onClick={() => props.set(2)}
-          variant="solid"
-        >
-          <Text fontSize="md">CHEKOUT</Text>
-        </Button>
+        <Btn title="CHECKOUT" onClick={() => props.set(2)} />
       </ModalFooter>
     </ModalContent>
   );
