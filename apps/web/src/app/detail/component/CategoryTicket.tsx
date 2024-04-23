@@ -1,8 +1,21 @@
 import { HStack, Button, Text } from '@chakra-ui/react';
 import { Plus, Minus } from '@phosphor-icons/react';
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function CategoryTicket() {
+export default function CategoryTicket(props: any) {
+  const { title, qtyTicket } = props;
+  const [qty, setQty] = useState<number>(0);
+
+  const handleMinus = () => {
+    setQty(qty - 1);
+    props.setOrder({ ...props.order, [title]: qty - 1 });
+  };
+
+  const handlePlus = () => {
+    setQty(qty + 1);
+    props.setOrder({ ...props.order, [title]: qty + 1 });
+  };
+
   return (
     <HStack
       py={2}
@@ -11,24 +24,11 @@ export default function CategoryTicket() {
       className="border-2 rounded-md border-black mt-2"
     >
       <Text fontWeight={'semibold'} fontSize="lg">
-        Ticket Reguler
+        Ticket {title}
       </Text>
       <HStack>
         <Button
-          backgroundColor={'#FF204E'}
-          color={'white'}
-          padding={0}
-          _hover={{
-            color: '#FF204E',
-            backgroundColor: 'white',
-            border: '1px',
-          }}
-          variant="solid"
-        >
-          <Plus size={20} />
-        </Button>
-        <Text fontSize="lg">1</Text>
-        <Button
+          onClick={() => (qty > 0 ? handleMinus() : null)}
           backgroundColor={'#FF204E'}
           color={'white'}
           padding={0}
@@ -40,6 +40,21 @@ export default function CategoryTicket() {
           variant="solid"
         >
           <Minus size={20} />
+        </Button>
+        <Text fontSize="lg">{qty}</Text>
+        <Button
+          onClick={() => (qtyTicket > qty ? handlePlus() : null)}
+          backgroundColor={'#FF204E'}
+          color={'white'}
+          padding={0}
+          _hover={{
+            color: '#FF204E',
+            backgroundColor: 'white',
+            border: '1px',
+          }}
+          variant="solid"
+        >
+          <Plus size={20} />
         </Button>
       </HStack>
     </HStack>

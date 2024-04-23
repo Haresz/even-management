@@ -11,7 +11,7 @@ import {
   RadioGroup,
   Stack,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import CheckOutHeader from './CheckOutHeader';
 import Btn from '@/components/Btn';
 
@@ -33,7 +33,8 @@ function Method(props: any) {
 }
 
 export default function PayMethod(props: any) {
-  const [value, setValue] = React.useState('');
+  const { value, setValue } = props;
+
   return (
     <ModalContent>
       <ModalHeader className="text-blueDark border-b-2 border-blueDark">

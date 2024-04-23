@@ -1,10 +1,27 @@
-import { Heading, Box, Image, Text } from '@chakra-ui/react';
+import { Heading, Box, Image, Text, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
 import React from 'react';
 
-export default function Card() {
+export default function Card(props: any) {
+  const days = ['Sun', 'Mon', 'Tuey', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const date = new Date(props.date);
   return (
-    <Link className="w-[300px] text-black" href={'/detail/1'}>
+    <Link className="w-[300px] text-blueDark" href={`/detail/${props.id}`}>
       <Image
         className="object-cover"
         src="/hero-landing.webp"
@@ -12,14 +29,16 @@ export default function Card() {
         height={150}
       />
       <Text py={4} fontSize="lg">
-        Tomorow • 10:00 PM
+        {`${days[date.getDay()]}, ${date.getDate()} ${
+          months[date.getMonth()]
+        } • ${props.time}`}
       </Text>
       <Heading pb={6} as="h4" size="sm">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry.
+        <Box>{props.name}</Box>
+        <Box>{props.description}</Box>
       </Heading>
       <Text py={4} fontSize="lg">
-        Jakarta - Indonesia
+        {props.location}
       </Text>
     </Link>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CategoryTicket from '../CategoryTicket';
 import {
   ModalContent,
@@ -7,30 +7,35 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Button,
-  Text,
 } from '@chakra-ui/react';
 import PopupOrderSumary from './OrderSumary';
 import UseDisCount from './UseDisCount';
 import Btn from '@/components/Btn';
 
 export default function OrderContent(props: any) {
+  const { event, ticket, orders, setOrders } = props;
+
   return (
     <ModalContent>
       <ModalHeader className="text-blueDark border-b-2 border-blueDark">
         <Heading as="h3" mr={8} size="md">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
+          {event?.eventName}
         </Heading>
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <PopupOrderSumary />
-        <>
-          <CategoryTicket />
-          <CategoryTicket />
-          <CategoryTicket />
-        </>
+        <PopupOrderSumary ticket={ticket} orders={orders} />
+        {ticket?.map((item: any) => {
+          return (
+            <CategoryTicket
+              key={item.id}
+              qtyTicket={item.AvailableTicket}
+              title={item.ticketType}
+              order={orders}
+              setOrder={setOrders}
+            />
+          );
+        })}
         <UseDisCount />
       </ModalBody>
       <ModalFooter>

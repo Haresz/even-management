@@ -9,11 +9,26 @@ import {
   Box,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SimplePagination from './Pagination';
 import Card from './Card';
+import { getAllEvent } from '@/api/event';
 
 export default function ListEvent() {
+  const [events, setEvents] = useState([]);
+  const getevent = async () => {
+    try {
+      const response = await getAllEvent();
+      setEvents(response.data.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getevent();
+  }, []);
+
   return (
     <Box px={{ base: 4, sm: 16 }} py={16}>
       <Select
@@ -44,12 +59,19 @@ export default function ListEvent() {
         <TabPanels>
           <TabPanel>
             <HStack mt={8} gap={8} flexWrap={'wrap'}>
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
+              {events.map((event: any) => {
+                return (
+                  <Card
+                    key={event.id}
+                    id={event.id}
+                    date={event.date}
+                    name={event.eventName}
+                    location={event.location}
+                    description={event.description}
+                    time={event.time}
+                  />
+                );
+              })}
             </HStack>
           </TabPanel>
           <TabPanel>

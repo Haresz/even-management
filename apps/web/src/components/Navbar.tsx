@@ -27,9 +27,12 @@ export default function Navbar() {
       px={{ base: 4, sm: 16 }}
       color="white"
     >
-      <Heading as="h4" size="lg">
-        EventHive
-      </Heading>
+      <Link href={'/'}>
+        <Heading as="h4" size="lg">
+          EventHive
+        </Heading>
+      </Link>
+
       <HStack gap={8}>
         <Link href={'/myticket'}>
           <HStack>

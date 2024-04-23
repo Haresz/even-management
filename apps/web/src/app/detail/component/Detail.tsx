@@ -2,7 +2,7 @@ import { VStack, Heading, HStack, Box, Text } from '@chakra-ui/react';
 import { CalendarBlank, MapPinSimple } from '@phosphor-icons/react';
 import React from 'react';
 
-export default function Detail() {
+export default function Detail(props: any) {
   return (
     <Box flex={1}>
       <VStack mt={26} alignItems="start">
@@ -11,7 +11,9 @@ export default function Detail() {
         </Heading>
         <HStack mt={2} className="font-semibold">
           <CalendarBlank size={32} />
-          <Text fontSize="lg">2 April 2024 - 10.00 AM</Text>
+          <Text fontSize="lg">
+            {props.date}- {props.time}
+          </Text>
         </HStack>
       </VStack>
       <VStack mt={10} alignItems="start">
@@ -20,10 +22,7 @@ export default function Detail() {
         </Heading>
         <HStack mt={2} className="font-semibold">
           <MapPinSimple size={32} />
-          <Text fontSize="lg">
-            Jl. Cipinang Indah Raya, RT.6/RW.12, Pd. Bambu, Kec. Duren Sawit,
-            Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta
-          </Text>
+          <Text fontSize="lg">{props.location}</Text>
         </HStack>
       </VStack>
       <VStack mt={10} alignItems="start">
@@ -31,11 +30,7 @@ export default function Detail() {
           Description
         </Heading>
         <HStack mt={2} className="font-semibold">
-          <Text fontSize="lg">
-            Lorem Ipsum has been the industry's standard dummy text ever since
-            the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book.
-          </Text>
+          <Text fontSize="lg">{props.description}</Text>
         </HStack>
       </VStack>
     </Box>

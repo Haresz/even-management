@@ -25,7 +25,7 @@ export function getAllEvent() {
   return Axios.get(`http://localhost:8000/events`);
 }
 
-export function getDetailevent(event_id: number) {
+export function getDetailevent(event_id: string) {
   return Axios.get(`http://localhost:8000/events/${event_id}`);
 }
 
