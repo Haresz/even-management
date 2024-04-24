@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function IconCategory(props: any) {
   return (
-    <Link href={''}>
+    <Link href={props.link}>
       <VStack>
         <Box
           padding={props.padding ? props.padding : 6}
