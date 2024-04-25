@@ -20,6 +20,7 @@ export default function ListEvent() {
     try {
       const response = await getAllEvent();
       setEvents(response.data.data);
+      console.log(response);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -27,6 +28,7 @@ export default function ListEvent() {
 
   useEffect(() => {
     getevent();
+    console.log(events);
   }, []);
 
   return (

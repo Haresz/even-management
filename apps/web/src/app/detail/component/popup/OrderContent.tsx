@@ -13,7 +13,16 @@ import UseDisCount from './UseDisCount';
 import Btn from '@/components/Btn';
 
 export default function OrderContent(props: any) {
-  const { event, ticket, orders, setOrders } = props;
+  const {
+    event,
+    ticket,
+    orders,
+    setOrders,
+    discount,
+    point,
+    setDiscount,
+    setPoint,
+  } = props;
 
   return (
     <ModalContent>
@@ -24,11 +33,17 @@ export default function OrderContent(props: any) {
       </ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <PopupOrderSumary ticket={ticket} orders={orders} />
+        <PopupOrderSumary
+          discount={discount}
+          point={point}
+          ticket={ticket}
+          orders={orders}
+        />
         {ticket?.map((item: any) => {
           return (
             <CategoryTicket
               key={item.id}
+              id={item.id}
               qtyTicket={item.AvailableTicket}
               title={item.ticketType}
               order={orders}
@@ -36,7 +51,12 @@ export default function OrderContent(props: any) {
             />
           );
         })}
-        <UseDisCount />
+        <UseDisCount
+          setDiscount={setDiscount}
+          setPoint={setPoint}
+          discount={discount}
+          point={point}
+        />
       </ModalBody>
       <ModalFooter>
         <Btn title="CHECKOUT" onClick={() => props.set(2)} />

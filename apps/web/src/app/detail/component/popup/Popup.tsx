@@ -12,8 +12,11 @@ export default function PopUp(props: any) {
   const params = useParams<{ id: string }>();
 
   const [ticket, setTicket] = useState([]);
-  const [orders, setOrders] = useState({});
+  const [orders, setOrders] = useState();
   const [payment, setPayment] = useState('');
+  const [discount, setDiscount] = useState();
+  const [point, setPoint] = useState();
+  const [transaction, setTransaction] = useState();
 
   const getDetail = async () => {
     try {
@@ -30,8 +33,17 @@ export default function PopUp(props: any) {
   }, []);
 
   useEffect(() => {
-    console.log(payment);
-  }, [payment]);
+    const mergedData: any = ticket.map((item) => {
+      const { id, ticketType } = item;
+      if (!orders) {
+        return null;
+      }
+      const value = orders[ticketType];
+      return { ticketId: id, count: value };
+    });
+    setTransaction(mergedData);
+  }, [ticket, orders]);
+
   return (
     <Modal size={'xl'} isCentered isOpen={props.isOpen} onClose={props.onClose}>
       {props.overlay}
@@ -40,17 +52,25 @@ export default function PopUp(props: any) {
           event={event}
           ticket={ticket}
           orders={orders}
-          setOrders={setOrders}
+          discount={discount}
+          point={point}
           set={setStep}
+          setOrders={setOrders}
+          setDiscount={setDiscount}
+          setPoint={setPoint}
         />
       ) : step == 2 ? (
         <PayMethod setValue={setPayment} value={payment} set={setStep} />
       ) : (
         <CodePayment
+          transaction={transaction}
           method={payment}
           ticket={ticket}
           orders={orders}
+          discount={discount}
+          point={point}
           set={setStep}
+          onClose={props.onClose}
         />
       )}
     </Modal>

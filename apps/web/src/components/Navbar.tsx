@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import {
   Coin,
+  Receipt,
   SealPercent,
   SignOut,
   Ticket,
@@ -36,10 +37,10 @@ export default function Navbar() {
       <HStack gap={8}>
         <Link href={'/myticket'}>
           <HStack>
-            <Ticket size={32} />
+            <Receipt size={32} />
             <Text fontSize="lg" fontWeight={'semibold'}>
               {' '}
-              Tickets
+              Transaction
             </Text>
           </HStack>
         </Link>

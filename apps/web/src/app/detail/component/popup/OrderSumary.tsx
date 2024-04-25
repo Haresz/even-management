@@ -3,7 +3,7 @@ import React from 'react';
 import ItemOrderSumary from './ItemOrderSumary';
 
 export default function PopupOrderSumary(props: any) {
-  const { orders, ticket } = props;
+  const { orders, ticket, discount, point } = props;
 
   const subtotal = ticket?.reduce(
     (
@@ -13,9 +13,20 @@ export default function PopupOrderSumary(props: any) {
         ticketType: string | number;
       },
     ) => {
-      if (orders[item.ticketType] !== undefined) {
-        return total + orders[item.ticketType] * item.price; // Harga per tiket (contoh: IDR 180,000)
+      let itemPrice = item.price;
+
+      if (discount !== undefined) {
+        itemPrice -= (item.price * parseInt(discount)) / 100;
       }
+
+      if (point !== undefined) {
+        itemPrice -= point / 1000;
+      }
+
+      if (orders ? orders[item.ticketType] !== undefined : null) {
+        return total + orders[item.ticketType] * itemPrice;
+      }
+
       return total;
     },
     0,
@@ -28,10 +39,13 @@ export default function PopupOrderSumary(props: any) {
       <Heading mt={4} mb={8} as="h3" size="sm">
         Order summary
       </Heading>
-      {ticket?.map((item: any) => {
+      {ticket?.map((item: any, index: number) => {
         if (
-          orders[item.ticketType] !== undefined &&
-          orders[item.ticketType] !== 0
+          orders
+            ? orders[item.ticketType] !== undefined
+            : null && orders
+              ? orders[item.ticketType] !== 0
+              : null
         ) {
           return (
             <ItemOrderSumary
@@ -45,6 +59,12 @@ export default function PopupOrderSumary(props: any) {
         return null;
       })}
       <Divider mt={4} mb={8} h={'1px'} bg={'black'} />
+      {discount != undefined ? (
+        <ItemOrderSumary title="Discount" price={discount} />
+      ) : null}
+      {point !== undefined ? (
+        <ItemOrderSumary title="Point" price={point} />
+      ) : null}
       <ItemOrderSumary title="Subtotal" price={`IDR ${subtotal},000`} />
       <ItemOrderSumary title="Total" price={`IDR ${total},000`} />
     </>
