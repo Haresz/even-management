@@ -147,18 +147,20 @@ const ticketTransaction = async (
 ) => {
   try {
     await Promise.all(
-      req.body.map(async (value: any) => {
+      req.body.data.map(async (value: any) => {
         const repoFindTicket: any = await prisma.tickets.findUnique({
           where: { id: value.ticketId },
         });
-        const repoUpdateTransaction = await prisma.tickets.update({
-          where: { id: value.ticketId },
-          data: {
-            AvailableTicket:
-              parseInt(repoFindTicket?.AvailableTicket) - value.count,
-            sold: parseInt(repoFindTicket.sold) + value.count,
-          },
-        });
+        if (value.count != undefined || value.count != null) {
+          const repoUpdateTransaction = await prisma.tickets.update({
+            where: { id: value.ticketId },
+            data: {
+              AvailableTicket:
+                parseInt(repoFindTicket?.AvailableTicket) - value.count,
+              sold: parseInt(repoFindTicket.sold) + value.count,
+            },
+          });
+        }
       }),
     );
 

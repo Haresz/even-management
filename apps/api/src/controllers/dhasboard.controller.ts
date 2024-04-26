@@ -56,7 +56,7 @@ export const getDashboardUser = async (req: Request, res: Response) => {
   try {
     const repoGetDashboardUser = await prisma.dashboards.findUnique({
       where: { userId: parseInt(userId) },
-      include: { user: true, event: true },
+      include: { user: true, events: true },
     });
     return res.status(200).send({
       status: 200,

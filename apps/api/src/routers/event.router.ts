@@ -13,6 +13,7 @@ eventRouter.post(
   addeventCount,
 );
 
+eventRouter.get('/:page', eventController.getAllEventsPagination);
 eventRouter.get('/', eventController.getAllEvents);
 eventRouter.get(
   '/:id',

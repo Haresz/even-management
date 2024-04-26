@@ -5,6 +5,7 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
   let { eventName, price, date, time, location, description, categoryId } =
     req.body;
   const { file } = req;
+  console.log(file);
   try {
     if (
       !eventName ||
@@ -22,7 +23,8 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
         message: 'input invalid',
       });
     }
-    date = new Date(date);
+    console.log(req.body);
+    console.log(req.params.id);
     const repoAddEvent = await prisma.events.create({
       data: {
         dashboardId: parseInt(req.params.id),
@@ -50,12 +52,56 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
 
 const getAllEvents = async (req: Request, res: Response) => {
   try {
-    const repoGetAllEvents = await prisma.events.findMany();
+    const count = await prisma.events.aggregate({
+      _count: {
+        _all: true,
+      },
+    });
+    const repoGetAllEvents = await prisma.events.findMany({
+      include: {
+        category: true,
+        ticket: true,
+      },
+    });
     return res.status(200).send({
       status: 200,
       success: true,
       message: 'get all event successfully',
       data: repoGetAllEvents,
+      count: count._count._all,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+const getAllEventsPagination = async (req: Request, res: Response) => {
+  const { page } = req.params;
+  const pageN = parseInt(page) * 4 - 4;
+  try {
+    const count = await prisma.events.aggregate({
+      _count: {
+        _all: true,
+      },
+    });
+    const repoGetAllEvents = await prisma.events.findMany({
+      skip: pageN,
+      take: 4,
+      include: {
+        category: true,
+        ticket: true,
+      },
+    });
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'get all event successfully',
+      data: repoGetAllEvents,
+      count: count._count._all,
     });
   } catch (error) {
     console.log(error);
@@ -91,8 +137,16 @@ const getDetailEvents = async (req: Request, res: Response) => {
 };
 
 const updateEvents = async (req: Request, res: Response) => {
-  const { eventName, price, date, time, location, description, categoryId } =
-    req.body;
+  const {
+    eventName,
+    price,
+    date,
+    time,
+    location,
+    description,
+    categoryId,
+    eventType,
+  } = req.body;
   try {
     if (!req.body || !req.params.id) {
       return res.status(401).send({
@@ -105,6 +159,7 @@ const updateEvents = async (req: Request, res: Response) => {
       where: { id: parseInt(req.params.id) },
       data: {
         eventName,
+        eventType,
         price,
         date,
         time,
@@ -152,7 +207,7 @@ const updateAvailableTicket = async (
     });
     const repoUpdateAvailableTicket = await prisma.events.update({
       where: { id: parseInt(eventId) },
-      data: { AvailableTicket: agreration._sum.AvailableTicket },
+      data: { availableTicket: agreration._sum.AvailableTicket },
     });
 
     return res.status(201).send({
@@ -250,7 +305,7 @@ const eventTransaction = async (req: Request, res: Response) => {
     let agreration: any;
     let repoFindTicket: any;
     await Promise.all(
-      req.body.map(async (value: any) => {
+      req.body.data.map(async (value: any) => {
         // Find Ticket
         repoFindTicket = await prisma.tickets.findUnique({
           where: { id: parseInt(value.ticketId) },
@@ -269,7 +324,7 @@ const eventTransaction = async (req: Request, res: Response) => {
     const repoEventUpdate: any = await prisma.events.update({
       where: { id: parseInt(repoFindTicket.eventId) },
       data: {
-        AvailableTicket: agreration._sum.AvailableTicket,
+        availableTicket: agreration._sum.AvailableTicket,
         soldQuantity: agreration._sum.sold,
       },
     });
@@ -306,6 +361,7 @@ const eventTransaction = async (req: Request, res: Response) => {
 
 export default {
   getAllEvents,
+  getAllEventsPagination,
   getDetailEvents,
   addEvent,
   updateEvents,

@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <Box className="bg-gradient-to-b from-redDark to-blueDark text-white text-start">
+    <Box className="z-[99999] bg-gradient-to-b from-redDark to-blueDark text-white text-start">
       <Heading
         px={{ base: 4, sm: 16 }}
         py={20}

@@ -1,48 +1,28 @@
-export default function SimplePagination() {
+import { HStack, Heading, Text } from '@chakra-ui/react';
+
+export default function SimplePagination(props: any) {
+  const { page, setPage, maxPage } = props;
   return (
-    <div className="flex">
-      <a
-        href="#"
-        className="flex items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+    <div className="flex mt-8 mb-16">
+      <button
+        onClick={() => (page >= 2 ? setPage(page - 1) : null)}
+        className="btn-pagination"
       >
-        <svg
-          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M13 5H1m0 0 4 4M1 5l4-4"
-          />
-        </svg>
         Previous
-      </a>
-      <a
-        href="#"
-        className="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
+      </button>
+      <HStack textAlign={'center'} mx={4}>
+        <Text fontSize={'md'}>Page</Text>
+        <Heading as="h1" size="md">
+          {page ? page : 0}
+        </Heading>
+        <Text fontSize={'md'}>of {maxPage ? maxPage : 0} Page</Text>
+      </HStack>
+      <button
+        onClick={() => (page <= maxPage - 1 ? setPage(page + 1) : null)}
+        className="btn-pagination"
       >
         Next
-        <svg
-          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"
-          />
-        </svg>
-      </a>
+      </button>
     </div>
   );
 }

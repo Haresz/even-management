@@ -40,6 +40,7 @@ model Transactions {
   userId Int 
   transactionDate DateTime @default(now())
   total Int
+  status String @default("pending")
   createAt DateTime @default(now())
   ticket TicketsTransaction[]
   user Users @relation(fields: [userId], references: [id])
@@ -66,36 +67,36 @@ model TicketsTransaction {
 }
 
 model Dashboards {
-  id Int @id @unique @default(autoincrement())
-  userId Int @unique
-  eventCount Int @default(0)
-  attendeeCount Int @default(0)
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  eventCount Int       @default(0)
+  attendeeCount Int    @default(0)
   transactionCount Int @default(0)
-  user Users @relation(fields: [userId], references: [id])
-  event Events[]
+  user      Users      @relation(fields: [userId], references: [id])
+  events    Events[]   // Relasi One-to-Many: Satu Dashboard memiliki banyak Events
 }
 
-model Events{
-  id Int @id @unique @default(autoincrement())
-  dashboardId Int @unique
-  eventName String
-  image String
-  price Int
-  date DateTime
-  time String
-  location String
-  description String
-  AvailableTicket Int @default(0)
-  soldQuantity Int @default(0)
-  eventType String @default("paid")
-  categoryId Int
-  published Boolean @default(false)
-  createAt DateTime @default(now())
-  dashboard Dashboards @relation(fields: [dashboardId], references: [id])
-  category Categorys @relation(fields: [categoryId], references: [id])
-  promotion Promotions[]
-  reviews Reviews[]
-  ticket Tickets[]
+model Events {
+  id              Int       @id @default(autoincrement())
+  dashboardId     Int       
+  eventName       String    
+  image           String    
+  price           Int       
+  date            DateTime  
+  time            String    
+  location        String    
+  description     String    
+  availableTicket Int       @default(0)
+  soldQuantity    Int       @default(0)
+  eventType       String    @default("paid")
+  categoryId      Int       
+  published       Boolean   @default(false)
+  createAt        DateTime  @default(now())
+  dashboard       Dashboards @relation(fields: [dashboardId], references: [id])
+  category        Categorys  @relation(fields: [categoryId], references: [id])
+  promotion       Promotions[]
+  reviews         Reviews[]
+  ticket          Tickets[]
 }
 
 model Categorys{

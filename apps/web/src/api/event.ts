@@ -25,6 +25,10 @@ export function getAllEvent() {
   return Axios.get(`http://localhost:8000/events`);
 }
 
+export function getAllEventPagination(page: number) {
+  return Axios.get(`http://localhost:8000/events/${page}`);
+}
+
 export function getDetailevent(event_id: string) {
   return Axios.get(`http://localhost:8000/events/${event_id}`);
 }

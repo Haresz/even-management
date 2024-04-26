@@ -12,15 +12,19 @@ import {
 import React, { useEffect, useState } from 'react';
 import SimplePagination from './Pagination';
 import Card from './Card';
-import { getAllEvent } from '@/api/event';
+import { getAllEventPagination } from '@/api/event';
 
 export default function ListEvent() {
   const [events, setEvents] = useState([]);
+  const [maxPage, setMaxPage] = useState();
+  const [page, setPage] = useState(1);
+
   const getevent = async () => {
     try {
-      const response = await getAllEvent();
+      const response = await getAllEventPagination(page);
       setEvents(response.data.data);
-      console.log(response);
+      const maxPage: any = response.data.count / 4;
+      setMaxPage(maxPage);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -28,8 +32,7 @@ export default function ListEvent() {
 
   useEffect(() => {
     getevent();
-    console.log(events);
-  }, []);
+  }, [page]);
 
   return (
     <Box px={{ base: 4, sm: 16 }} py={16}>
@@ -81,7 +84,7 @@ export default function ListEvent() {
           </TabPanel>
         </TabPanels>
       </Tabs>
-      <SimplePagination />
+      <SimplePagination page={page} setPage={setPage} maxPage={maxPage} />
     </Box>
   );
 }

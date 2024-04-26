@@ -8,23 +8,21 @@ const addTransaction = async (
 ) => {
   const { userId } = req.params;
   try {
-    console.log(req.body);
     let total = 0;
+    console.log(req.body, userId);
 
-    // Menghitung total harga dari semua tiket
-    for (const value of req.body) {
+    for (const value of req.body.data) {
       const repoFindTicket: any = await prisma.tickets.findUnique({
         where: { id: parseInt(value.ticketId) },
       });
       if (!repoFindTicket) {
         throw new Error('Invalid input');
       }
-      console.log(total, repoFindTicket.price, value.count);
-      total += repoFindTicket.price * value.count;
+      if (value.count != undefined || value.count != null) {
+        total += repoFindTicket.price * value.count;
+      }
     }
 
-    console.log(total);
-    // Membuat transaksi
     const repoAddTransaction = await prisma.transactions.create({
       data: {
         userId: parseInt(userId),
@@ -32,9 +30,8 @@ const addTransaction = async (
       },
     });
 
-    // Mengaitkan setiap tiket dengan transaksi yang sama
     await Promise.all(
-      req.body.map(async (value: any) => {
+      req.body.data.map(async (value: any) => {
         const repoTicketTransaction = await prisma.ticketsTransaction.create({
           data: {
             ticketId: value.ticketId,
@@ -63,6 +60,17 @@ const getAllTransactionsUser = async (req: Request, res: Response) => {
   try {
     const repoGetAllTransactionsUser = await prisma.transactions.findMany({
       where: { userId: parseInt(userId) },
+      include: {
+        ticket: {
+          include: {
+            ticket: {
+              include: {
+                event: true,
+              },
+            },
+          },
+        },
+      },
     });
     return res.status(200).send({
       status: 200,
