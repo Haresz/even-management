@@ -21,11 +21,11 @@ export function createEvent(
   });
 }
 
-export function getAllEvent() {
-  return Axios.get(`http://localhost:8000/events`);
+export function getAllEventCategory(category: number, page: number) {
+  return Axios.get(`http://localhost:8000/events/${category}/${page}`);
 }
 
-export function getAllEventPagination(page: number) {
+export function getAllEvent(page: number) {
   return Axios.get(`http://localhost:8000/events/${page}`);
 }
 

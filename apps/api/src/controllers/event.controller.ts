@@ -51,6 +51,8 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllEvents = async (req: Request, res: Response) => {
+  const { page } = req.params;
+  const pageN = parseInt(page) * 4 - 4;
   try {
     const count = await prisma.events.aggregate({
       _count: {
@@ -58,6 +60,8 @@ const getAllEvents = async (req: Request, res: Response) => {
       },
     });
     const repoGetAllEvents = await prisma.events.findMany({
+      skip: pageN,
+      take: 4,
       include: {
         category: true,
         ticket: true,
@@ -79,16 +83,23 @@ const getAllEvents = async (req: Request, res: Response) => {
     });
   }
 };
-const getAllEventsPagination = async (req: Request, res: Response) => {
-  const { page } = req.params;
+
+const getAllEventsCatgory = async (req: Request, res: Response) => {
+  const { category, page } = req.params;
   const pageN = parseInt(page) * 4 - 4;
   try {
     const count = await prisma.events.aggregate({
+      where: {
+        categoryId: parseInt(category),
+      },
       _count: {
         _all: true,
       },
     });
     const repoGetAllEvents = await prisma.events.findMany({
+      where: {
+        categoryId: parseInt(category),
+      },
       skip: pageN,
       take: 4,
       include: {
@@ -361,7 +372,7 @@ const eventTransaction = async (req: Request, res: Response) => {
 
 export default {
   getAllEvents,
-  getAllEventsPagination,
+  getAllEventsCatgory,
   getDetailEvents,
   addEvent,
   updateEvents,

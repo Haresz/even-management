@@ -1,5 +1,5 @@
 'use client';
-import { getAllEvent } from '@/api/event';
+import { getAllEventCategory } from '@/api/event';
 import Card from '@/components/Card';
 import { Box, HStack, Text, Image } from '@chakra-ui/react';
 import {
@@ -13,16 +13,18 @@ import React, { useEffect, useState } from 'react';
 
 export default function page() {
   const [events, setEvents] = useState([]);
+  const [page, setPage] = useState(1);
+  const params = useParams<{ category: string }>();
+  const { category } = params;
+
   const getevent = async () => {
     try {
-      const response = await getAllEvent();
+      const response = await getAllEventCategory(parseInt(category), page);
       setEvents(response.data.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
-  const params = useParams<{ category: string }>();
-  const { category } = params;
 
   useEffect(() => {
     getevent();

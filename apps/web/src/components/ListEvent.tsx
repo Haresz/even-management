@@ -4,35 +4,45 @@ import {
   TabList,
   Tab,
   TabPanels,
-  TabPanel,
-  HStack,
   Box,
   Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import SimplePagination from './Pagination';
 import Card from './Card';
-import { getAllEventPagination } from '@/api/event';
+import { getAllEvent, getAllEventCategory } from '@/api/event';
+import TabContent from './TabContent';
 
 export default function ListEvent() {
   const [events, setEvents] = useState([]);
-  const [maxPage, setMaxPage] = useState();
+  const [maxPage, setMaxPage] = useState(0);
   const [page, setPage] = useState(1);
+  const [category, setCategory] = useState<number | null>(null);
 
   const getevent = async () => {
     try {
-      const response = await getAllEventPagination(page);
+      let response;
+      if (category !== null) {
+        response = await getAllEventCategory(category, page);
+      } else {
+        response = await getAllEvent(page);
+      }
       setEvents(response.data.data);
-      const maxPage: any = response.data.count / 4;
+      const maxPage = Math.ceil(response.data.count / 4);
       setMaxPage(maxPage);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
 
+  const tabsHandler = (catId: number | null) => {
+    setCategory(catId);
+    setPage(1);
+  };
+
   useEffect(() => {
     getevent();
-  }, [page]);
+  }, [page, category]);
 
   return (
     <Box px={{ base: 4, sm: 16 }} py={16}>
@@ -49,39 +59,61 @@ export default function ListEvent() {
       </Select>
       <Tabs mt={10} color={'#5D0E41'} variant="unstyled" colorScheme="green">
         <TabList flexWrap={'wrap'}>
-          <Tab _selected={{ fontWeight: 'bold' }}>
+          <Tab
+            onClick={() => tabsHandler(null)}
+            _selected={{ fontWeight: 'bold' }}
+          >
             <Text fontSize="sm">All</Text>
           </Tab>
           <Tab _selected={{ fontWeight: 'bold' }}>Upcoming</Tab>
           <Tab _selected={{ fontWeight: 'bold' }}>Promotion</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Music</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Nightlife</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Performing & Visual Arts</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Holidays</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Hobbies</Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Food & Drink</Tab>
+          <Tab
+            onClick={() => tabsHandler(1)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Music
+          </Tab>
+          <Tab
+            onClick={() => tabsHandler(2)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Nightlife
+          </Tab>
+          <Tab
+            onClick={() => tabsHandler(3)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Performing & Visual Arts
+          </Tab>
+          <Tab
+            onClick={() => tabsHandler(4)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Holidays
+          </Tab>
+          <Tab
+            onClick={() => tabsHandler(5)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Hobbies
+          </Tab>
+          <Tab
+            onClick={() => tabsHandler(6)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Food & Drink
+          </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
-            <HStack mt={8} gap={8} flexWrap={'wrap'}>
-              {events.map((event: any) => {
-                return (
-                  <Card
-                    key={event.id}
-                    id={event.id}
-                    date={event.date}
-                    name={event.eventName}
-                    location={event.location}
-                    description={event.description}
-                    time={event.time}
-                  />
-                );
-              })}
-            </HStack>
-          </TabPanel>
-          <TabPanel>
-            <p>two!</p>
-          </TabPanel>
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
+          <TabContent events={events} />
         </TabPanels>
       </Tabs>
       <SimplePagination page={page} setPage={setPage} maxPage={maxPage} />
