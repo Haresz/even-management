@@ -5,29 +5,39 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Button,
   HStack,
   Image,
-  Text,
+  Heading,
 } from '@chakra-ui/react';
 import React from 'react';
+import Btn from './Btn';
+import { switchRole } from '@/api/auth';
 
 export default function ModalAddevent(props: any) {
+  const actionSwitch = async () => {
+    try {
+      props.onClose();
+      const response = await switchRole(1);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <Modal onClose={props.onClose} isCentered size={'lg'} isOpen={props.isOpen}>
+    <Modal onClose={props.onClose} isCentered size={'md'} isOpen={props.isOpen}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent justifyContent={'center'}>
         <ModalCloseButton />
         <ModalBody>
           <HStack justifyContent={'center'}>
-            <Image my={20} src="envelope_front.webp" />
+            <Image mt={20} mb={8} src="envelope_front.webp" />
           </HStack>
-          <Text textAlign={'center'} fontSize={'xl'}>
+          <Heading color={'#5D0E41'} textAlign={'center'} as="h2" size="lg">
             Please verifikasi your email
-          </Text>
+          </Heading>
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={props.onClose}>VERIFIKASI</Button>
+        <ModalFooter mt={-8} mb={8} justifyContent={'center'}>
+          <Btn onClick={actionSwitch} title={'VERIFIKASI'} />
         </ModalFooter>
       </ModalContent>
     </Modal>

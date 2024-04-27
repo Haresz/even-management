@@ -7,7 +7,7 @@ import { getDetailevent } from '@/api/event';
 import { useParams } from 'next/navigation';
 
 export default function PopUp(props: any) {
-  const [step, setStep] = React.useState(1);
+  const [step, setStep] = useState(1);
   const [event, setEvent] = useState<any>();
   const params = useParams<{ id: string }>();
 
