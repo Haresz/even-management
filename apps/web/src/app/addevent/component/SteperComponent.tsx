@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Box,
   Step,
-  StepDescription,
   StepIcon,
   StepIndicator,
   StepNumber,
@@ -11,26 +10,22 @@ import {
   StepTitle,
   Stepper,
   VStack,
-  useSteps,
 } from '@chakra-ui/react';
 
-export default function SteperComponent() {
+export default function SteperComponent(props: { step: number }) {
   const steps = [
     { title: 'Create Event' },
     { title: 'Add Ticket' },
     { title: 'Publish' },
   ];
-  const { activeStep } = useSteps({
-    index: 1,
-    count: steps.length,
-  });
+
   return (
     <Stepper
       mx={'auto'}
       size="md"
       maxW={500}
       colorScheme="red"
-      index={activeStep}
+      index={props.step}
     >
       {steps.map((step, index) => (
         <Step key={index}>

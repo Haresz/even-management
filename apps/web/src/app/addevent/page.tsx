@@ -7,17 +7,29 @@ import PublishEvent from './component/PublishEvent';
 import CreateEvent from './component/CreateEvent';
 
 export default function page() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
+  const [idEvent, setEventId] = useState();
+  const [dataEvent, setEvent] = useState();
 
   return (
     <Box px={{ base: 4, sm: 16 }} mt={20} minH={'100vh'}>
-      <SteperComponent />
+      <SteperComponent step={step} />
       {step == 1 ? (
-        <CreateEvent step={step} setStep={setStep} />
+        <CreateEvent
+          step={step}
+          setStep={setStep}
+          setEvent={setEvent}
+          setEventId={setEventId}
+        />
       ) : step == 2 ? (
-        <AddTicket step={step} setStep={setStep} />
+        <AddTicket step={step} setStep={setStep} id={idEvent} />
       ) : (
-        <PublishEvent step={step} setStep={setStep} />
+        <PublishEvent
+          step={step}
+          setStep={setStep}
+          id={idEvent}
+          dataEvent={dataEvent}
+        />
       )}
     </Box>
   );

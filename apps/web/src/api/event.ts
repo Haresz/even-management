@@ -2,22 +2,28 @@ import Axios from 'axios';
 
 export function createEvent(
   id_user: number,
+  eventName: string,
   file: any,
-  price: number,
-  date: Date,
-  time: number,
+  price: any,
+  date: any,
+  time: string,
   location: string,
   description: string,
-  category_id: number,
+  categoryId: any,
 ) {
-  return Axios.post(`http://localhost:8000/events/${id_user}`, {
-    file,
-    price,
-    date,
-    time,
-    location,
-    description,
-    category_id,
+  const formData = new FormData();
+  formData.append('eventName', eventName);
+  formData.append('file', file);
+  formData.append('price', price);
+  formData.append('date', date);
+  formData.append('time', time);
+  formData.append('location', location);
+  formData.append('description', description);
+  formData.append('categoryId', categoryId);
+  return Axios.post(`http://localhost:8000/events/1`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   });
 }
 
@@ -30,10 +36,10 @@ export function getAllEvent(page: number) {
 }
 
 export function getDetailevent(event_id: string) {
-  return Axios.get(`http://localhost:8000/events/${event_id}`);
+  return Axios.get(`http://localhost:8000/events/detail/event/${event_id}`);
 }
 
-export function publishevent(event_id: number) {
+export function publishEvent(event_id: number) {
   return Axios.patch(`http://localhost:8000/events/publish/${event_id}`);
 }
 

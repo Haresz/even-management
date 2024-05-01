@@ -23,17 +23,19 @@ export default function PopUp(props: any) {
       const response = await getDetailevent(params.id);
       setEvent(response.data.data);
       setTicket(response.data.data.ticket);
+      console.log(response);
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.log('Error fetching user data:', error);
     }
   };
 
   useEffect(() => {
     getDetail();
+    console.log(ticket);
   }, []);
 
   useEffect(() => {
-    const mergedData: any = ticket.map((item) => {
+    const mergedData: any = ticket?.map((item) => {
       const { id, ticketType } = item;
       if (!orders) {
         return null;

@@ -1,17 +1,22 @@
-import React from 'react';
-import InputText from '@/components/InputText';
+import React, { useState } from 'react';
 import { Button, HStack, Box } from '@chakra-ui/react';
+import FormTicket from './FormTicket';
 
 export default function AddTicket(props: any) {
   const { setStep } = props;
+  const [variant, setVariant] = useState(1);
+
   return (
     <Box mt={10}>
-      <InputText label="Ticket type" />
-      <InputText label="Price" />
-      <InputText label="Count" />
-      <Box className=" border-b-2 border-redDark mt-16" />
+      {Array.from({ length: variant }, (_, index) => (
+        <FormTicket id={props.id} key={index} />
+      ))}
       <HStack justifyContent={'end'} alignItems={'end'} my={8} w={'100%'}>
-        <Button variant="outline" colorScheme="red">
+        <Button
+          onClick={() => setVariant(variant + 1)}
+          variant="outline"
+          colorScheme="red"
+        >
           ADD VARIANT
         </Button>
         <Button onClick={() => setStep(3)} colorScheme="red">

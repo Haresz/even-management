@@ -13,6 +13,9 @@ export default function InputText(props: any) {
         borderStyle={'solid'}
         focusBorderColor={'gray.400'}
         size="md"
+        name={props.name}
+        onChange={props.onChange}
+        value={props.value}
       />
     </>
   );

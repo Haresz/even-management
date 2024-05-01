@@ -8,6 +8,7 @@ import Title from '../component/Title';
 import PopUp from '../component/popup/Popup';
 import { getDetailevent } from '@/api/event';
 import { useParams } from 'next/navigation';
+import Coments from '../component/Coments';
 
 export default function DetailEvent() {
   const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
@@ -20,6 +21,7 @@ export default function DetailEvent() {
     try {
       const response = await getDetailevent(params.id);
       setEvent(response.data.data);
+      console.log(response, params.id);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -71,6 +73,7 @@ export default function DetailEvent() {
             }}
           />
         </HStack>
+        <Coments />
       </Box>
       <PopUp isOpen={isOpen} onClose={onClose} overlay={overlay} />
     </Box>

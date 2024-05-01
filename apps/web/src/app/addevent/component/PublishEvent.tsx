@@ -1,9 +1,75 @@
-import React from 'react';
-import { Box, Button, HStack, Heading, Image } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  HStack,
+  Heading,
+  Image,
+  useToast,
+} from '@chakra-ui/react';
 import Detail from '@/app/detail/component/Detail';
 import TicketItem from './TicketItem';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { getDetailevent, publishEvent } from '@/api/event';
 
 export default function PublishEvent(props: any) {
+  const searchParams = useSearchParams();
+  const toast = useToast();
+  const id: any = searchParams.get('id');
+  const [event, setEvent] = useState<any>();
+  const router = useRouter();
+
+  const getDetail = async () => {
+    try {
+      const response = await getDetailevent(id);
+      setEvent(response.data.data);
+      console.log(response, id);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  const publish = async () => {
+    try {
+      const response = await publishEvent(id);
+      toast({
+        title: `Success to publish event`,
+        status: 'success',
+        position: 'top',
+        isClosable: true,
+      });
+      router.push('/');
+    } catch (error) {
+      toast({
+        title: `Failed to publish event`,
+        status: 'error',
+        position: 'top',
+        isClosable: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getDetail();
+  }, []);
+
+  const days = ['Sun', 'Mon', 'Tuey', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const date = new Date(event ? event.date : '');
+  console.log(event?.ticket);
   return (
     <Box my={10}>
       <Image
@@ -18,20 +84,30 @@ export default function PublishEvent(props: any) {
         industry.
       </Heading>
       <Detail
-        time={'10.00 AM'}
-        location={
-          'Jl. Cipinang Indah Raya, RT.6/RW.12, Pd. Bambu, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta'
-        }
-        description={`Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`}
-        date={'2 April 2024'}
+        time={event?.time}
+        location={event?.location}
+        description={event?.description}
+        date={`${days[date.getDay()]}, ${date.getDate()} ${
+          months[date.getMonth()]
+        }`}
       />
       <Box my={16}>
-        <TicketItem type="Reguler" count="100" price="50" />
-        <TicketItem type="VIP" count="80" price="80" />
-        <TicketItem type="VVIP" count="30" price="100" />
+        {event?.ticket.map((item: any) => {
+          console.log(item);
+          return (
+            <TicketItem
+              key={item?.id}
+              type={item?.ticketType}
+              count={item?.AvailableTicket}
+              price={item?.price}
+            />
+          );
+        })}
       </Box>
       <HStack justifyContent={'end'} alignItems={'end'} my={8} w={'100%'}>
-        <Button colorScheme="red">PUBLISH EVENT</Button>
+        <Button onClick={publish} colorScheme="red">
+          PUBLISH EVENT
+        </Button>
       </HStack>
     </Box>
   );
