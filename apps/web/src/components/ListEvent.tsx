@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Select,
   Tabs,
@@ -6,18 +7,20 @@ import {
   TabPanels,
   Box,
   Text,
+  Input,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
 import SimplePagination from './Pagination';
-import Card from './Card';
 import { getAllEvent, getAllEventCategory } from '@/api/event';
 import TabContent from './TabContent';
+import debouce from 'lodash.debounce';
 
 export default function ListEvent() {
   const [events, setEvents] = useState([]);
   const [maxPage, setMaxPage] = useState(0);
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState<number | null>(null);
+  const [upComing, setUpComing] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const getevent = async () => {
     try {
@@ -27,7 +30,21 @@ export default function ListEvent() {
       } else {
         response = await getAllEvent(page);
       }
-      setEvents(response.data.data);
+
+      const currentDate = new Date().getTime();
+
+      const upcomingEvents = response.data.data.filter((item: any) => {
+        const eventDate = new Date(item.date).getTime();
+        const threeDaysBeforeEvent = currentDate + 3 * 24 * 60 * 60 * 1000;
+        return eventDate < threeDaysBeforeEvent;
+      });
+
+      if (upComing) {
+        setEvents(upcomingEvents);
+        console.log(upcomingEvents);
+      } else {
+        setEvents(response.data.data);
+      }
       const maxPage = Math.ceil(response.data.count / 4);
       setMaxPage(maxPage);
     } catch (error) {
@@ -38,25 +55,56 @@ export default function ListEvent() {
   const tabsHandler = (catId: number | null) => {
     setCategory(catId);
     setPage(1);
+    setUpComing(false);
   };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  const debouncedHandleSearchChange = useMemo(() => {
+    return debouce(handleSearchChange, 300);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      debouncedHandleSearchChange.cancel();
+    };
+  }, []);
+
+  useEffect(() => {
+    debouncedHandleSearchChange(searchTerm);
+    console.log(searchTerm);
+  }, [searchTerm]);
 
   useEffect(() => {
     getevent();
-  }, [page, category]);
+  }, [page, category, upComing]);
+
+  const filteredEvents = useMemo(() => {
+    const data = events.filter((event: any) => {
+      const eventNameMatches = event.eventName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const locationMatches = event.location
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      return eventNameMatches || locationMatches;
+    });
+    setEvents(data);
+  }, [searchTerm]);
 
   return (
     <Box px={{ base: 4, sm: 16 }} py={16}>
-      <Select
+      <Input
+        maxW={420}
         borderColor={'#A0153E'}
-        color={'#5D0E41'}
-        width={200}
-        placeholder="Select option"
-      >
-        <option value="most-update">Most Update</option>
-        <option value="most-longest">Most Longest</option>
-        <option value="most-expensive">Most Expensive</option>
-        <option value="most-low-price">Most Low price</option>
-      </Select>
+        borderStyle={'solid'}
+        focusBorderColor={'gray.400'}
+        variant="outline"
+        placeholder="Search"
+        onChange={(e) => debouncedHandleSearchChange(e.target.value)}
+      />
       <Tabs mt={10} color={'#5D0E41'} variant="unstyled" colorScheme="green">
         <TabList flexWrap={'wrap'}>
           <Tab
@@ -65,7 +113,12 @@ export default function ListEvent() {
           >
             <Text fontSize="sm">All</Text>
           </Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Upcoming</Tab>
+          <Tab
+            onClick={() => setUpComing(true)}
+            _selected={{ fontWeight: 'bold' }}
+          >
+            Upcoming
+          </Tab>
           <Tab _selected={{ fontWeight: 'bold' }}>Promotion</Tab>
           <Tab
             onClick={() => tabsHandler(1)}

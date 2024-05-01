@@ -7,7 +7,7 @@ import PublishEvent from './component/PublishEvent';
 import CreateEvent from './component/CreateEvent';
 
 export default function page() {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [idEvent, setEventId] = useState();
   const [dataEvent, setEvent] = useState();
 
