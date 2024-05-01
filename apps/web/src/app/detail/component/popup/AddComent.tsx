@@ -1,5 +1,5 @@
 import {
-  HStack,
+  Button,
   Heading,
   Modal,
   ModalBody,
@@ -9,11 +9,53 @@ import {
   ModalHeader,
   Text,
   Textarea,
+  VStack,
+  useToast,
 } from '@chakra-ui/react';
-import { Star } from '@phosphor-icons/react/dist/ssr';
-import React from 'react';
+import React, { useState } from 'react';
+import FormRating from '../FormRating';
+import { createReview } from '@/api/review';
+import { useParams } from 'next/navigation';
 
 export default function AddComent(props: any) {
+  const [rating, setRating] = useState(0);
+  const [feedBack, setFeedback] = useState('');
+  const params = useParams<{ id: string }>();
+  const toast = useToast();
+
+  const handleMouseOver = (index: any) => {
+    setRating(index + 1);
+  };
+
+  const handleClick = (index: any) => {
+    setRating(index + 1);
+  };
+
+  const actionAddRating = async () => {
+    try {
+      const response = await createReview(
+        parseInt(params.id),
+        1,
+        rating,
+        feedBack,
+      );
+      toast({
+        title: `Success to add rating`,
+        status: 'success',
+        position: 'top',
+        isClosable: true,
+      });
+      props.onClose();
+    } catch (error) {
+      toast({
+        title: `Failed to add rating`,
+        status: 'error',
+        position: 'top',
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Modal size={'xl'} isCentered isOpen={props.isOpen} onClose={props.onClose}>
       {props.overlay}
@@ -28,13 +70,11 @@ export default function AddComent(props: any) {
           <Text mt={4} fontWeight={'semibold'} fontSize="lg">
             Add Rating
           </Text>
-          <HStack color={'#ECC94B'} my={4} w={'100%'}>
-            <Star size={32} weight="fill" />
-            <Star size={32} weight="fill" />
-            <Star size={32} weight="fill" />
-            <Star size={32} weight="fill" />
-            <Star size={32} weight="fill" />
-          </HStack>
+          <FormRating
+            rating={rating}
+            handleMouseOver={handleMouseOver}
+            handleClick={handleClick}
+          />
           <Text mt={6} fontWeight={'semibold'} fontSize="lg">
             Feed Back
           </Text>
@@ -47,9 +87,16 @@ export default function AddComent(props: any) {
             borderColor={'gray.600'}
             borderStyle={'solid'}
             borderRadius={5}
+            onChange={(e) => setFeedback(e.target.value)}
           />
         </ModalBody>
-        <ModalFooter></ModalFooter>
+        <ModalFooter>
+          <VStack justifyContent={'end'} alignItems={'end'} w={'100%'}>
+            <Button onClick={actionAddRating} type="submit" colorScheme="red">
+              Submit
+            </Button>
+          </VStack>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

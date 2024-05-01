@@ -7,6 +7,7 @@ module.exports = {
         redPrimary: '#FF204E',
         redDark: '#A0153E',
         blueDark: '#00224D',
+        star: '#ECC94B',
       },
       backgroundImage: {
         heroLanding: "url('../../public/hero-landing.webp')",
