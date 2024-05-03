@@ -27,12 +27,20 @@ export function createEvent(
   });
 }
 
-export function getAllEventCategory(category: number, page: number) {
-  return Axios.get(`http://localhost:8000/events/${category}/${page}`);
-}
+export function getAllEvent(page: number, category?: number, search?: string) {
+  let url = `http://localhost:8000/events/?page=${page}`;
 
-export function getAllEvent(page: number) {
-  return Axios.get(`http://localhost:8000/events/${page}`);
+  if (category !== undefined) {
+    url += `&category=${category}`;
+  }
+
+  if (search !== undefined) {
+    url += `&search=${search}`;
+  }
+
+  const res = Axios.get(url);
+  console.log(res);
+  return res;
 }
 
 export function getDetailevent(event_id: string) {

@@ -10,7 +10,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import SimplePagination from './Pagination';
-import { getAllEvent, getAllEventCategory } from '@/api/event';
+import { getAllEvent } from '@/api/event';
 import TabContent from './TabContent';
 import debouce from 'lodash.debounce';
 
@@ -18,18 +18,16 @@ export default function ListEvent() {
   const [events, setEvents] = useState([]);
   const [maxPage, setMaxPage] = useState(0);
   const [page, setPage] = useState(1);
-  const [category, setCategory] = useState<number | null>(null);
+  const [category, setCategory] = useState<number | undefined>(undefined);
   const [upComing, setUpComing] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   const getevent = async () => {
     try {
       let response;
-      if (category !== null) {
-        response = await getAllEventCategory(category, page);
-      } else {
-        response = await getAllEvent(page);
-      }
+
+      response = await getAllEvent(page, category, searchTerm);
+      console.log(response);
 
       const currentDate = new Date().getTime();
 
@@ -52,7 +50,7 @@ export default function ListEvent() {
     }
   };
 
-  const tabsHandler = (catId: number | null) => {
+  const tabsHandler = (catId: number | undefined) => {
     setCategory(catId);
     setPage(1);
     setUpComing(false);
@@ -108,7 +106,7 @@ export default function ListEvent() {
       <Tabs mt={10} color={'#5D0E41'} variant="unstyled" colorScheme="green">
         <TabList flexWrap={'wrap'}>
           <Tab
-            onClick={() => tabsHandler(null)}
+            onClick={() => tabsHandler(undefined)}
             _selected={{ fontWeight: 'bold' }}
           >
             <Text fontSize="sm">All</Text>
