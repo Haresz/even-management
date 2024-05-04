@@ -1,5 +1,5 @@
 'use client';
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Heading, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Card from './component/Card';
 import { getAllTransactionUser } from '@/api/transaction';
@@ -25,12 +25,7 @@ export default function page() {
     if (transaction.length > 0 && transaction[0].ticket) {
       setEvent(transaction[0].ticket[0].ticket.event);
     }
-    console.log(transaction);
   }, [transaction]);
-
-  useEffect(() => {
-    console.log(event);
-  }, [event]);
 
   return (
     <Box className=" min-h-screen">
@@ -41,12 +36,14 @@ export default function page() {
         {transaction.map((item: any) => {
           return (
             <Card
+              key={item.id}
+              id={item.id}
               transactionDate={item.createAt}
               status={item.status}
               eventDate={event?.date}
               eventLocation={event?.location}
-              // ticketType
               eventTitle={event?.eventName}
+              ticket={item?.ticket}
             />
           );
         })}

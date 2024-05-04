@@ -7,7 +7,7 @@ export default function TabContent(props: any) {
   return (
     <TabPanel>
       <HStack mt={8} gap={8} alignItems={'start'} flexWrap={'wrap'}>
-        {events.map((event: any) => {
+        {events?.map((event: any) => {
           return (
             <Card
               key={event.id}

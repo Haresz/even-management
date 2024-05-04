@@ -35,7 +35,9 @@ export default function Card(props: any) {
       </Text>
       <Heading pb={6} as="h4" size="sm">
         <Box>{props.name}</Box>
-        <Box>{props.description}</Box>
+        <Box className="text-ellipsis overflow-hidden line-clamp-2">
+          {props.description}
+        </Box>
       </Heading>
       <Text py={4} fontSize="lg">
         {props.location}

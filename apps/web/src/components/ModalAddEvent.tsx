@@ -18,7 +18,6 @@ export default function ModalAddevent(props: any) {
     try {
       props.onClose();
       const response = await switchRole(1);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

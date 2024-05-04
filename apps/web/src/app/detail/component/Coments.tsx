@@ -23,7 +23,6 @@ export default function Coments() {
     try {
       const response = await getReviewEvent(parseInt(params.id));
       setReviewData(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

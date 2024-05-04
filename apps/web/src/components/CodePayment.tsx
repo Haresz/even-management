@@ -11,8 +11,8 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React from 'react';
-import PopupOrderSumary from './OrderSumary';
-import CheckOutHeader from './CheckOutHeader';
+import PopupOrderSumary from '../app/detail/component/popup/OrderSumary';
+import CheckOutHeader from '../app/detail/component/popup/CheckOutHeader';
 import Btn from '@/components/Btn';
 import { createTransaction } from '@/api/transaction';
 
@@ -20,10 +20,8 @@ export default function CodePayment(props: any) {
   const { ticket, orders, method, discount, point, transaction } = props;
   const toast = useToast();
   const handleTransaction = async () => {
-    console.log(transaction);
     try {
       const response = await createTransaction(transaction, 1);
-      console.log(response);
       if (response.status === 201) {
         toast({
           title: `transaction successfully`,

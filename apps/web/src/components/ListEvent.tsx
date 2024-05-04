@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Select,
   Tabs,
   TabList,
   Tab,
@@ -27,7 +26,6 @@ export default function ListEvent() {
       let response;
 
       response = await getAllEvent(page, category, searchTerm);
-      console.log(response);
 
       const currentDate = new Date().getTime();
 
@@ -39,7 +37,6 @@ export default function ListEvent() {
 
       if (upComing) {
         setEvents(upcomingEvents);
-        console.log(upcomingEvents);
       } else {
         setEvents(response.data.data);
       }
@@ -72,12 +69,17 @@ export default function ListEvent() {
 
   useEffect(() => {
     debouncedHandleSearchChange(searchTerm);
-    console.log(searchTerm);
   }, [searchTerm]);
 
   useEffect(() => {
     getevent();
   }, [page, category, upComing]);
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      getevent();
+    }
+  }, [searchTerm]);
 
   const filteredEvents = useMemo(() => {
     const data = events.filter((event: any) => {

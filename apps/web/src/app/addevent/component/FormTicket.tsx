@@ -48,7 +48,6 @@ export default function FormTicket(props: { id: number }) {
     },
     validationSchema: ticketSchema,
     onSubmit: (values) => {
-      console.log(values);
       actionAddTicket(values);
     },
   });

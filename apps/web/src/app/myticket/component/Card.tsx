@@ -7,9 +7,11 @@ import {
   VStack,
   Heading,
   Badge,
+  ModalOverlay,
+  useDisclosure,
 } from '@chakra-ui/react';
-import Link from 'next/link';
 import React from 'react';
+import Popup from './Popup';
 
 export default function Card(props: any) {
   const {
@@ -17,9 +19,40 @@ export default function Card(props: any) {
     status,
     eventDate,
     eventLocation,
-    ticketType,
     eventTitle,
+    ticket,
+    id,
   } = props;
+  const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
+
+  const days = ['Sun', 'Mon', 'Tuey', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  const dateTransaction = new Date(transactionDate);
+  const dateEvent = new Date(eventDate);
+
+  function addZero(i: any) {
+    if (i < 10) {
+      i = '0' + i;
+    }
+    return i;
+  }
+
   return (
     <VStack
       my={8}
@@ -31,7 +64,9 @@ export default function Card(props: any) {
     >
       <HStack>
         <Heading as="h4" size="md">
-          {transactionDate}
+          {`${days[dateTransaction.getDay()]}, ${dateTransaction.getDate()} ${
+            months[dateTransaction.getMonth()]
+          }`}
         </Heading>
         {status == 'pending' ? (
           <Badge colorScheme="yellow">Pending</Badge>
@@ -51,14 +86,6 @@ export default function Card(props: any) {
             <Text fontWeight="semibold" size="sm" mr={8}>
               {eventLocation}
             </Text>
-            {/* <Box
-              w="fit-content"
-              py={1}
-              px={8}
-              className="border-2 border-redPrimary border-dashed rounded-md text-center text-redPrimary font-semibold"
-            >
-              {ticketType}
-            </Box> */}
           </HStack>
 
           <Text fontSize={'2xl'} my={4}>
@@ -66,7 +93,11 @@ export default function Card(props: any) {
           </Text>
           <HStack justifyContent={'space-between'}>
             <Text fontWeight="semibold" size="sm">
-              {eventDate}
+              {`${days[dateEvent.getDay()]}, ${dateEvent.getDate()} ${
+                months[dateEvent.getMonth()]
+              } • ${addZero(dateEvent.getHours())}.${addZero(
+                dateEvent.getMinutes(),
+              )}`}
             </Text>
           </HStack>
           <HStack h={'fit-content'} w="100%" justifyContent={'end'}>
@@ -75,14 +106,21 @@ export default function Card(props: any) {
                 <Btn title="Review" />
               </Box>
             ) : null}
-            <Link href={'/'}>
+            <Box className="cursor-pointer" onClick={onOpen}>
               <Text decoration="underline" fontWeight="semibold" size="sm">
                 View Transaction Details
               </Text>
-            </Link>
+            </Box>
           </HStack>
         </VStack>
       </HStack>
+      <Popup
+        isOpen={isOpen}
+        onClose={onClose}
+        overlay={overlay}
+        id={id}
+        ticket={ticket}
+      />
     </VStack>
   );
 }

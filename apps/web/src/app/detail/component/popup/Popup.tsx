@@ -2,7 +2,7 @@ import { Modal } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import OrderContent from './OrderContent';
 import PayMethod from './PayMethod';
-import CodePayment from './CodePayment';
+import CodePayment from '../../../../components/CodePayment';
 import { getDetailevent } from '@/api/event';
 import { useParams } from 'next/navigation';
 
@@ -23,7 +23,6 @@ export default function PopUp(props: any) {
       const response = await getDetailevent(params.id);
       setEvent(response.data.data);
       setTicket(response.data.data.ticket);
-      console.log(response);
     } catch (error) {
       console.log('Error fetching user data:', error);
     }
@@ -31,7 +30,6 @@ export default function PopUp(props: any) {
 
   useEffect(() => {
     getDetail();
-    console.log(ticket);
   }, []);
 
   useEffect(() => {

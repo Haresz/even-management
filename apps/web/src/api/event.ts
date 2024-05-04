@@ -39,7 +39,6 @@ export function getAllEvent(page: number, category?: number, search?: string) {
   }
 
   const res = Axios.get(url);
-  console.log(res);
   return res;
 }
 

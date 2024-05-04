@@ -21,7 +21,6 @@ export default function DetailEvent() {
     try {
       const response = await getDetailevent(params.id);
       setEvent(response.data.data);
-      console.log(response, params.id);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

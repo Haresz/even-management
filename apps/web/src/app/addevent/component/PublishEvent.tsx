@@ -23,7 +23,6 @@ export default function PublishEvent(props: any) {
     try {
       const response = await getDetailevent(id);
       setEvent(response.data.data);
-      console.log(response, id);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -69,7 +68,6 @@ export default function PublishEvent(props: any) {
     'December',
   ];
   const date = new Date(event ? event.date : '');
-  console.log(event?.ticket);
   return (
     <Box my={10}>
       <Image
@@ -80,8 +78,7 @@ export default function PublishEvent(props: any) {
         src="/hero-landing.webp"
       />
       <Heading textAlign={'center'} my={16} as="h2" size="xl">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry.
+        {event?.eventName}
       </Heading>
       <Detail
         time={event?.time}
@@ -93,7 +90,6 @@ export default function PublishEvent(props: any) {
       />
       <Box my={16}>
         {event?.ticket.map((item: any) => {
-          console.log(item);
           return (
             <TicketItem
               key={item?.id}

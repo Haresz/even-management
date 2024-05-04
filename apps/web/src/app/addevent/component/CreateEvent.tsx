@@ -48,7 +48,6 @@ export default function CreateEvent(props: any) {
       );
       props.setStep(2);
       router.push(`/addevent?id=${response.data.data.event.id}`);
-      console.log(response.data.data.event.id);
       toast({
         title: `Success to add event`,
         status: 'success',
@@ -76,7 +75,6 @@ export default function CreateEvent(props: any) {
     },
     validationSchema: eventSchema,
     onSubmit: (values) => {
-      console.log(values);
       actionAddEvent(values);
     },
   });
@@ -84,10 +82,6 @@ export default function CreateEvent(props: any) {
   const handleChangeFile = (e: any) => {
     setFile(e.target.files[0]);
   };
-
-  useEffect(() => {
-    console.log(file);
-  }, [file]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -163,6 +157,7 @@ export default function CreateEvent(props: any) {
           name="categoryId"
           value={formik.values.categoryId}
           onChange={formik.handleChange}
+          placeholder="Choose category"
         >
           <option value="1">Music</option>
           <option value="2">Nightlife</option>

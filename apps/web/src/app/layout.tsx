@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Providers } from './providers';
 import { fonts } from './fonts';
 
-// These styles apply to every route in the application
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
