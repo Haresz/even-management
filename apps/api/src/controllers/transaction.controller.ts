@@ -36,6 +36,7 @@ const addTransaction = async (
           data: {
             ticketId: value.ticketId,
             transactionId: repoAddTransaction.id,
+            count: value.count,
           },
         });
         if (!repoTicketTransaction) {
@@ -58,7 +59,7 @@ const addTransaction = async (
 const getAllTransactionsUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
-    const repoGetAllTransactionsUser = await prisma.transactions.findMany({
+    const repoGetAllTransactionsUser: any = await prisma.transactions.findMany({
       where: { userId: parseInt(userId) },
       include: {
         ticket: {
@@ -72,6 +73,7 @@ const getAllTransactionsUser = async (req: Request, res: Response) => {
         },
       },
     });
+
     return res.status(200).send({
       status: 200,
       success: true,
@@ -88,7 +90,49 @@ const getAllTransactionsUser = async (req: Request, res: Response) => {
   }
 };
 
+const getDetailTransaction = async (req: Request, res: Response) => {
+  const { transactionId } = req.params;
+  try {
+    const repoGetDetail: any = await prisma.transactions.findUnique({
+      where: { id: parseInt(transactionId) },
+      include: {
+        ticket: {
+          include: {
+            ticket: {
+              include: {
+                event: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const repoTicketTransaction = await prisma.ticketsTransaction.findMany({
+      where: {
+        transactionId: parseInt(transactionId),
+      },
+    });
+
+    console.log(repoTicketTransaction);
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'get detail transactions successfuly',
+      data: repoGetDetail,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   addTransaction,
   getAllTransactionsUser,
+  getDetailTransaction,
 };

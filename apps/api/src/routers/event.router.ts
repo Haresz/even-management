@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import eventController from '../controllers/event.controller';
-import { addeventCount } from '../controllers/dhasboard.controller';
 import { uplouder } from '../middlewares/uploder';
 import ticketController from '../controllers/ticket.controller';
 
@@ -10,13 +9,11 @@ eventRouter.post(
   '/:id',
   uplouder('IMG', '/images').single('file'),
   eventController.addEvent,
-  addeventCount,
 );
 
-eventRouter.get('/:category/:page', eventController.getAllEventsCatgory);
-eventRouter.get('/:page', eventController.getAllEvents);
+eventRouter.get('/', eventController.getAllEvents);
 eventRouter.get(
-  '/:id',
+  '/detail/event/:id',
   eventController.findIdEvent,
   eventController.getDetailEvents,
 );

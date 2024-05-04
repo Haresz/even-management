@@ -5,7 +5,6 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
   let { eventName, price, date, time, location, description, categoryId } =
     req.body;
   const { file } = req;
-  console.log(file);
   try {
     if (
       !eventName ||
@@ -23,15 +22,13 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
         message: 'input invalid',
       });
     }
-    console.log(req.body);
-    console.log(req.params.id);
     const repoAddEvent = await prisma.events.create({
       data: {
         dashboardId: parseInt(req.params.id),
         eventName,
         image: file.path,
         price: parseInt(price),
-        date,
+        date: new Date(date),
         time,
         location,
         description,
@@ -39,7 +36,16 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
       },
     });
 
-    next();
+    const repoAddEventCount = await prisma.dashboards.update({
+      where: { id: parseInt(req.params.id) },
+      data: { eventCount: +1 },
+    });
+    return res.status(201).send({
+      status: 201,
+      success: true,
+      message: 'add event successfully',
+      data: { dhasboard: repoAddEventCount, event: repoAddEvent },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send({
@@ -51,46 +57,13 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllEvents = async (req: Request, res: Response) => {
-  const { page } = req.params;
+  const { category, page, serach }: any = req.query;
   const pageN = parseInt(page) * 4 - 4;
-  try {
-    const count = await prisma.events.aggregate({
-      _count: {
-        _all: true,
-      },
-    });
-    const repoGetAllEvents = await prisma.events.findMany({
-      skip: pageN,
-      take: 4,
-      include: {
-        category: true,
-        ticket: true,
-      },
-    });
-    return res.status(200).send({
-      status: 200,
-      success: true,
-      message: 'get all event successfully',
-      data: repoGetAllEvents,
-      count: count._count._all,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({
-      status: 500,
-      message: 'server error',
-      error: (error as Error).message,
-    });
-  }
-};
 
-const getAllEventsCatgory = async (req: Request, res: Response) => {
-  const { category, page } = req.params;
-  const pageN = parseInt(page) * 4 - 4;
   try {
     const count = await prisma.events.aggregate({
       where: {
-        categoryId: parseInt(category),
+        ...(category ? { categoryId: parseInt(category) } : {}),
       },
       _count: {
         _all: true,
@@ -98,7 +71,17 @@ const getAllEventsCatgory = async (req: Request, res: Response) => {
     });
     const repoGetAllEvents = await prisma.events.findMany({
       where: {
-        categoryId: parseInt(category),
+        ...(category ? { categoryId: parseInt(category) } : {}),
+        ...(serach
+          ? {
+              eventName: {
+                search: serach,
+              },
+              location: {
+                search: serach,
+              },
+            }
+          : {}),
       },
       skip: pageN,
       take: 4,
@@ -127,7 +110,7 @@ const getAllEventsCatgory = async (req: Request, res: Response) => {
 const getDetailEvents = async (req: Request, res: Response) => {
   try {
     const repoDetailEvents = await prisma.events.findUnique({
-      where: { id: parseFloat(req.params.id) },
+      where: { id: parseInt(req.params.id) },
       include: { ticket: true },
     });
 
@@ -317,11 +300,9 @@ const eventTransaction = async (req: Request, res: Response) => {
     let repoFindTicket: any;
     await Promise.all(
       req.body.data.map(async (value: any) => {
-        // Find Ticket
         repoFindTicket = await prisma.tickets.findUnique({
           where: { id: parseInt(value.ticketId) },
         });
-        // Find Stock
         agreration = await prisma.tickets.aggregate({
           where: { eventId: parseInt(repoFindTicket.eventId) },
           _sum: {
@@ -331,7 +312,6 @@ const eventTransaction = async (req: Request, res: Response) => {
         });
       }),
     );
-    // Update Event
     const repoEventUpdate: any = await prisma.events.update({
       where: { id: parseInt(repoFindTicket.eventId) },
       data: {
@@ -339,8 +319,6 @@ const eventTransaction = async (req: Request, res: Response) => {
         soldQuantity: agreration._sum.sold,
       },
     });
-    // Update Dashboard
-
     const repoEventDhasboardTransaction: any = await prisma.events.aggregate({
       where: { dashboardId: parseInt(repoEventUpdate.dashboardId) },
       _sum: {
@@ -372,7 +350,6 @@ const eventTransaction = async (req: Request, res: Response) => {
 
 export default {
   getAllEvents,
-  getAllEventsCatgory,
   getDetailEvents,
   addEvent,
   updateEvents,

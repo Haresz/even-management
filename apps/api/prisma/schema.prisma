@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -61,7 +62,8 @@ model TicketsTransaction {
   ticket Tickets @relation(fields: [ticketId], references: [id])
   ticketId Int 
   transaction Transactions @relation(fields: [transactionId], references: [id])
-  transactionId Int 
+  transactionId Int
+  count Int 
 
   @@id([ticketId,transactionId])
 }
@@ -77,8 +79,8 @@ model Dashboards {
 }
 
 model Events {
-  id              Int       @id @default(autoincrement())
-  dashboardId     Int       
+  id              Int       @id @unique @default(autoincrement())
+  dashboardId     Int     
   eventName       String    
   image           String    
   price           Int       
@@ -116,8 +118,8 @@ model Promotions {
 
 model Reviews{
   id Int @id @default(autoincrement())
-  eventId Int @unique
-  userId Int @unique
+  eventId Int 
+  userId Int
   rating Int @default(5)
   feedBack String
   event Events @relation(fields: [eventId], references: [id])

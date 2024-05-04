@@ -13,7 +13,12 @@ const addTicket = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
     const repoAddTicket = await prisma.tickets.create({
-      data: { eventId: parseInt(eventId), ticketType, price, AvailableTicket },
+      data: {
+        eventId: parseInt(eventId),
+        ticketType,
+        price: parseInt(price),
+        AvailableTicket: parseInt(AvailableTicket),
+      },
     });
     next();
   } catch (error) {

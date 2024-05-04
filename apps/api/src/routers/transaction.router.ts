@@ -13,5 +13,9 @@ transactionRouter.post(
 );
 
 transactionRouter.get('/:userId', transactionController.getAllTransactionsUser);
+transactionRouter.get(
+  '/detail/:transactionId',
+  transactionController.getDetailTransaction,
+);
 
 export default transactionRouter;
