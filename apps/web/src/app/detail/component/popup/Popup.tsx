@@ -33,6 +33,10 @@ export default function PopUp(props: any) {
   }, []);
 
   useEffect(() => {
+    console.log(payment);
+  }, [payment]);
+
+  useEffect(() => {
     const mergedData: any = ticket?.map((item) => {
       const { id, ticketType } = item;
       if (!orders) {

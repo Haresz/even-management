@@ -5,6 +5,12 @@ export default function PriceGetTicket(props: any) {
   const price = props.ticket?.map((item: any) => {
     return item.price;
   });
+  const rupiah = (number: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(number);
+  };
   return (
     <HStack flex={1} justifyContent={'center'}>
       <Box
@@ -16,7 +22,7 @@ export default function PriceGetTicket(props: any) {
         {price && price.length > 0 ? (
           <>
             <Text fontSize="lg">
-              {Math.min(...price)}K - {Math.max(...price)}K
+              {rupiah(Math.min(...price))} - {rupiah(Math.max(...price))}
             </Text>
             <Button
               backgroundColor={'#FF204E'}

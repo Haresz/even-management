@@ -19,9 +19,16 @@ import { createTransaction } from '@/api/transaction';
 export default function CodePayment(props: any) {
   const { ticket, orders, method, discount, point, transaction } = props;
   const toast = useToast();
+  const currentTime = new Date();
+  const deadline = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
   const handleTransaction = async () => {
     try {
-      const response = await createTransaction(transaction, 1);
+      const response = await createTransaction(
+        transaction,
+        1,
+        method,
+        deadline,
+      );
       if (response.status === 201) {
         toast({
           title: `transaction successfully`,
@@ -32,17 +39,32 @@ export default function CodePayment(props: any) {
         props.onClose();
         window.location.reload();
       } else {
-        throw new Error('Failed to add blog');
+        throw new Error('Failed transaction');
       }
     } catch (error) {
       toast({
-        title: `Failed to add blog`,
+        title: `Failed transaction`,
         status: 'error',
         position: 'top',
         isClosable: true,
       });
     }
   };
+
+  const inputDate = new Date(deadline);
+
+  inputDate.setHours(inputDate.getHours() + 6);
+
+  const options: any = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+
+  const formattedDate = inputDate.toLocaleString('en-US', options);
   return (
     <ModalContent>
       <ModalHeader className="text-blueDark border-b-2 border-blueDark">
@@ -52,9 +74,9 @@ export default function CodePayment(props: any) {
       <ModalBody>
         <HStack my={4}>
           <Text className="font-semibold " fontSize={'md'}>
-            Payment deadline :{' '}
+            Payment deadline : {` `}
           </Text>
-          <Text className=" text-redPrimary">12 April 2024 18.00 AM</Text>
+          <Text className=" text-redPrimary">{formattedDate}</Text>
         </HStack>
         <HStack my={4}>
           <Text className="font-semibold " fontSize={'md'}>

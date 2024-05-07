@@ -41,6 +41,8 @@ model Transactions {
   userId Int 
   transactionDate DateTime @default(now())
   total Int
+  method String
+  deadline DateTime       
   status String @default("pending")
   createAt DateTime @default(now())
   ticket TicketsTransaction[]
@@ -83,7 +85,7 @@ model Events {
   dashboardId     Int     
   eventName       String    
   image           String    
-  price           Int       
+  price           Int
   date            DateTime  
   time            String    
   location        String    

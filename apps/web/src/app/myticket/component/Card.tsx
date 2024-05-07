@@ -22,6 +22,8 @@ export default function Card(props: any) {
     eventTitle,
     ticket,
     id,
+    method,
+    deadline,
   } = props;
   const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -120,6 +122,8 @@ export default function Card(props: any) {
         overlay={overlay}
         id={id}
         ticket={ticket}
+        method={method}
+        deadline={deadline}
       />
     </VStack>
   );

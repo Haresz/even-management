@@ -7,9 +7,9 @@ const addTransaction = async (
   next: NextFunction,
 ) => {
   const { userId } = req.params;
+  console.log(req.body, 'BODY IKI');
   try {
     let total = 0;
-    console.log(req.body, userId);
 
     for (const value of req.body.data) {
       const repoFindTicket: any = await prisma.tickets.findUnique({
@@ -23,10 +23,15 @@ const addTransaction = async (
       }
     }
 
+    const currentTime = new Date();
+    const deadline = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
+
     const repoAddTransaction = await prisma.transactions.create({
       data: {
         userId: parseInt(userId),
         total: total,
+        method: req.body.method,
+        deadline: deadline,
       },
     });
 

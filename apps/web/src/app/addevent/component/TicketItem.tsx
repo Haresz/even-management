@@ -2,6 +2,12 @@ import { HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 
 export default function TicketItem(props: any) {
+  const rupiah = (number: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(number);
+  };
   return (
     <HStack
       mt={6}
@@ -15,7 +21,7 @@ export default function TicketItem(props: any) {
         Ticket {props.type} / {props.count}
       </Text>
       <Text fontWeight={'semibold'} fontSize="lg">
-        {props.price}K
+        {rupiah(props.price)}
       </Text>
     </HStack>
   );

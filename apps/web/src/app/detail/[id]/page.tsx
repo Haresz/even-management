@@ -9,6 +9,8 @@ import PopUp from '../component/popup/Popup';
 import { getDetailevent } from '@/api/event';
 import { useParams } from 'next/navigation';
 import Coments from '../component/Coments';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 export default function DetailEvent() {
   const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
@@ -47,34 +49,38 @@ export default function DetailEvent() {
   ];
   const date = new Date(event ? event.date : '');
   return (
-    <Box mb={16}>
-      <HeroDetail />
-      <Box mx={{ base: 4, sm: 16 }}>
-        <Title eventName={event ? event.eventName : ''} />
-        <HStack
-          flexWrap={'wrap-reverse'}
-          alignItems={'start'}
-          justifyContent={'center'}
-        >
-          <Detail
-            time={event?.time}
-            location={event?.location}
-            description={event?.description}
-            date={`${days[date.getDay()]}, ${date.getDate()} ${
-              months[date.getMonth()]
-            }`}
-          />
-          <PriceGetTicket
-            ticket={event?.ticket}
-            onClick={() => {
-              setOverlay(<OverlayOne />);
-              onOpen();
-            }}
-          />
-        </HStack>
-        <Coments />
+    <>
+      <Navbar />
+      <Box mb={16}>
+        <HeroDetail />
+        <Box mx={{ base: 4, sm: 16 }}>
+          <Title eventName={event ? event.eventName : ''} />
+          <HStack
+            flexWrap={'wrap-reverse'}
+            alignItems={'start'}
+            justifyContent={'center'}
+          >
+            <Detail
+              time={event?.time}
+              location={event?.location}
+              description={event?.description}
+              date={`${days[date.getDay()]}, ${date.getDate()} ${
+                months[date.getMonth()]
+              }`}
+            />
+            <PriceGetTicket
+              ticket={event?.ticket}
+              onClick={() => {
+                setOverlay(<OverlayOne />);
+                onOpen();
+              }}
+            />
+          </HStack>
+          <Coments />
+        </Box>
+        <PopUp isOpen={isOpen} onClose={onClose} overlay={overlay} />
       </Box>
-      <PopUp isOpen={isOpen} onClose={onClose} overlay={overlay} />
-    </Box>
+      <Footer />
+    </>
   );
 }

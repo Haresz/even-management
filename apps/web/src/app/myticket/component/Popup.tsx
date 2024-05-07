@@ -14,6 +14,20 @@ import React from 'react';
 import PopupOrderSumary from './OrderSumary';
 
 export default function Popup(props: any) {
+  const inputDate = new Date(props.deadline);
+
+  inputDate.setHours(inputDate.getHours() + 6);
+
+  const options: any = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  };
+
+  const formattedDate = inputDate.toLocaleString('en-US', options);
   return (
     <Modal size={'xl'} isCentered isOpen={props.isOpen} onClose={props.onClose}>
       {props.overlay}
@@ -27,13 +41,13 @@ export default function Popup(props: any) {
             <Text className="font-semibold " fontSize={'md'}>
               Payment deadline :{' '}
             </Text>
-            <Text className=" text-redPrimary">12 April 2024 18.00 AM</Text>
+            <Text className=" text-redPrimary">{formattedDate}</Text>
           </HStack>
           <HStack my={4}>
             <Text className="font-semibold " fontSize={'md'}>
               Payment method :{' '}
             </Text>
-            <Text className=" text-redPrimary">{'BCA One Click'}</Text>
+            <Text className=" text-redPrimary">{props.method}</Text>
           </HStack>
           <VStack alignItems={'start'} my={4}>
             <Text className="font-medium my-4" fontSize={'md'}>

@@ -1,8 +1,15 @@
 import Axios from 'axios';
 
-export function createTransaction(data: [], id_user: number) {
+export function createTransaction(
+  data: [],
+  id_user: number,
+  method: string,
+  deadline: any,
+) {
   return Axios.post(`http://localhost:8000/transaction/${id_user}`, {
     data,
+    method,
+    deadline,
   });
 }
 

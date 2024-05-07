@@ -48,6 +48,8 @@ export default function page() {
                 eventLocation={event?.location}
                 eventTitle={event?.eventName}
                 ticket={item?.ticket}
+                method={item?.method}
+                deadline={item?.deadline}
               />
             );
           })}
