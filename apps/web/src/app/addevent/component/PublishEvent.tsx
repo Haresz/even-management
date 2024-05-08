@@ -11,6 +11,7 @@ import Detail from '@/app/detail/component/Detail';
 import TicketItem from './TicketItem';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getDetailevent, publishEvent } from '@/api/event';
+import PromotionForm from './PromotionForm';
 
 export default function PublishEvent(props: any) {
   const searchParams = useSearchParams();
@@ -100,6 +101,7 @@ export default function PublishEvent(props: any) {
           );
         })}
       </Box>
+      <PromotionForm />
       <HStack justifyContent={'end'} alignItems={'end'} my={8} w={'100%'}>
         <Button onClick={publish} colorScheme="red">
           PUBLISH EVENT

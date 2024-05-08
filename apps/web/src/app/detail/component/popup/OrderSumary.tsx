@@ -34,6 +34,13 @@ export default function PopupOrderSumary(props: any) {
 
   const total = subtotal;
 
+  const rupiah = (number: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(number);
+  };
+
   return (
     <>
       <Heading mt={4} mb={8} as="h3" size="sm">
@@ -52,7 +59,7 @@ export default function PopupOrderSumary(props: any) {
               key={item.id}
               title={'Ticket ' + item.ticketType}
               qty={orders[item.ticketType]}
-              price={'IDR' + item.price + ',000'}
+              price={rupiah(item.price)}
             />
           );
         }
@@ -65,8 +72,8 @@ export default function PopupOrderSumary(props: any) {
       {point !== undefined ? (
         <ItemOrderSumary title="Point" price={point} />
       ) : null}
-      <ItemOrderSumary title="Subtotal" price={`IDR ${subtotal},000`} />
-      <ItemOrderSumary title="Total" price={`IDR ${total},000`} />
+      <ItemOrderSumary title="Subtotal" price={rupiah(subtotal)} />
+      <ItemOrderSumary title="Total" price={rupiah(total)} />
     </>
   );
 }

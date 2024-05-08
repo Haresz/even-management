@@ -111,6 +111,7 @@ model Categorys{
 
 model Promotions {
   id Int @id @unique @default(autoincrement())
+  name String
   eventId Int
   discount String
   startDate DateTime @default(now())
