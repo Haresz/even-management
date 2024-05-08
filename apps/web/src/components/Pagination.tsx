@@ -3,7 +3,7 @@ import { HStack, Heading, Text } from '@chakra-ui/react';
 export default function SimplePagination(props: any) {
   const { page, setPage, maxPage } = props;
   return (
-    <div className="flex mt-8 mb-16">
+    <div className="flex mt-8 mb-16 text-black">
       <button
         onClick={() => (page >= 2 ? setPage(page - 1) : null)}
         className="btn-pagination"

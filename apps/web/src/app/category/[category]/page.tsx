@@ -3,6 +3,7 @@ import { getAllEvent } from '@/api/event';
 import Card from '@/components/Card';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import SimplePagination from '@/components/Pagination';
 import { Box, HStack, Text, Image } from '@chakra-ui/react';
 import {
   DiscoBall,
@@ -16,6 +17,8 @@ import React, { useEffect, useState } from 'react';
 export default function page() {
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(0);
+
   const params = useParams<{ category: string }>();
   const { category }: any = params;
 
@@ -23,6 +26,8 @@ export default function page() {
     try {
       const response = await getAllEvent(page, category);
       setEvents(response.data.data);
+      const maxPage = Math.ceil(response.data.count / 4);
+      setMaxPage(maxPage);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -93,6 +98,7 @@ export default function page() {
             return null;
           })}
         </HStack>
+        <SimplePagination page={page} setPage={setPage} maxPage={maxPage} />
       </Box>
       <Footer />
     </>
