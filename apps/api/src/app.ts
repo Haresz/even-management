@@ -14,6 +14,7 @@ import ticketRouter from './routers/ticket.router';
 import reviewRouter from './routers/review.router';
 import transactionRouter from './routers/transaction.router';
 import dashboardRouter from './routers/dashboard.router';
+import promotionRouter from './routers/promotion.router';
 
 function configureApp(): Express {
   const app = express();
@@ -49,6 +50,7 @@ function setRoutes(app: Express): void {
   app.use('/review', reviewRouter);
   app.use('/transaction', transactionRouter);
   app.use('/dashboard', dashboardRouter);
+  app.use('/promotion', promotionRouter);
 }
 
 function startServer(app: Express): void {

@@ -7,7 +7,6 @@ const addTransaction = async (
   next: NextFunction,
 ) => {
   const { userId } = req.params;
-  console.log(req.body, 'BODY IKI');
   try {
     let total = 0;
 

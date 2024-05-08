@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 export default function page() {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   const [idEvent, setEventId] = useState();
   const [dataEvent, setEvent] = useState();
 

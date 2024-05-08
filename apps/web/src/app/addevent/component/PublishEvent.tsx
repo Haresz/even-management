@@ -101,7 +101,7 @@ export default function PublishEvent(props: any) {
           );
         })}
       </Box>
-      <PromotionForm />
+      <PromotionForm id={id} />
       <HStack justifyContent={'end'} alignItems={'end'} my={8} w={'100%'}>
         <Button onClick={publish} colorScheme="red">
           PUBLISH EVENT
