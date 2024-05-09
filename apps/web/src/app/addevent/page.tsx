@@ -9,9 +9,10 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 export default function page() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [idEvent, setEventId] = useState();
   const [dataEvent, setEvent] = useState();
+  const [type, setType] = useState<any>();
 
   return (
     <>
@@ -21,6 +22,8 @@ export default function page() {
         {step == 1 ? (
           <CreateEvent
             step={step}
+            type={type}
+            setType={setType}
             setStep={setStep}
             setEvent={setEvent}
             setEventId={setEventId}

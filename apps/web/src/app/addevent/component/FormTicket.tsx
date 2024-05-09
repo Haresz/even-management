@@ -6,7 +6,7 @@ import { Box, Button, VStack, useToast } from '@chakra-ui/react';
 import { createTicket } from '@/api/ticket';
 import { useSearchParams } from 'next/navigation';
 
-export default function FormTicket(props: { id: number }) {
+export default function FormTicket(props: { id: number; type: string }) {
   const searchParams = useSearchParams();
   const id: any = searchParams.get('id');
   const toast = useToast();
@@ -17,6 +17,8 @@ export default function FormTicket(props: { id: number }) {
   });
 
   const actionAddTicket = async (values: any) => {
+    if (props.type == 'unpaid') values.price = '0';
+    console.log(values);
     try {
       const response = await createTicket(
         parseInt(id),
@@ -43,7 +45,7 @@ export default function FormTicket(props: { id: number }) {
   const formik = useFormik({
     initialValues: {
       ticketType: '',
-      price: '',
+      price: 0,
       count: '',
     },
     validationSchema: ticketSchema,
@@ -62,15 +64,18 @@ export default function FormTicket(props: { id: number }) {
       {formik.touched.ticketType && formik.errors.ticketType && (
         <div style={{ color: 'red' }}>{formik.errors.ticketType}</div>
       )}
-      <InputText
-        name="price"
-        label="Price"
-        value={formik.values.price}
-        onChange={formik.handleChange}
-      />
+      {props.type == 'paid' ? (
+        <InputText
+          name="price"
+          label="Price"
+          value={formik.values.price}
+          onChange={formik.handleChange}
+        />
+      ) : null}
       {formik.touched.price && formik.errors.price && (
         <div style={{ color: 'red' }}>{formik.errors.price}</div>
       )}
+
       <InputText
         name="count"
         label="Count"

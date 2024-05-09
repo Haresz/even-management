@@ -2,19 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import InputText from '@/components/InputText';
 import InputFile from '@/components/InputFile';
-import {
-  Box,
-  Button,
-  Heading,
-  Input,
-  Select,
-  VStack,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Button, VStack, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { createEvent } from '@/api/event';
 import { useRouter } from 'next/navigation';
+import InputDate from '@/components/InputDate';
+import InputSelect from '@/components/InputSelect';
 
 const eventSchema = Yup.object().shape({
   eventName: Yup.string().required('Event Name is required'),
@@ -44,6 +38,7 @@ export default function CreateEvent(props: any) {
         time,
         values.location,
         values.description,
+        props.type,
         values.categoryId,
       );
       props.setStep(2);
@@ -67,10 +62,11 @@ export default function CreateEvent(props: any) {
   const formik = useFormik({
     initialValues: {
       eventName: '',
-      price: '',
+      price: 0,
       dateTime: '',
       location: '',
       description: '',
+      eventType: '',
       categoryId: '',
     },
     validationSchema: eventSchema,
@@ -83,42 +79,60 @@ export default function CreateEvent(props: any) {
     setFile(e.target.files[0]);
   };
 
+  const handleChangeType = (e: any) => {
+    props.setType(e.target.value);
+    console.log(e.target.value);
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Box mt={8} />
-      <InputText
-        name="eventName"
-        value={formik.values.eventName}
-        onChange={formik.handleChange}
-        label="Event Name"
+      <>
+        <InputText
+          name="eventName"
+          value={formik.values.eventName}
+          onChange={formik.handleChange}
+          label="Event Name"
+        />
+        {formik.touched.eventName && formik.errors.eventName && (
+          <div style={{ color: 'red' }}>{formik.errors.eventName}</div>
+        )}
+      </>
+      <InputSelect
+        name="eventType"
+        label="Event Type"
+        value={props.type}
+        onChange={handleChangeType}
+        options={[
+          { value: 'paid', label: 'Paid' },
+          { value: 'unpaid', label: 'Unpaid' },
+        ]}
       />
-      {formik.touched.eventName && formik.errors.eventName && (
-        <div style={{ color: 'red' }}>{formik.errors.eventName}</div>
-      )}
-      <InputFile name="file" onChange={handleChangeFile} />
-      {file == null && <div style={{ color: 'red' }}>File is required</div>}
-      <InputText
-        name="price"
-        value={formik.values.price}
-        onChange={formik.handleChange}
-        label="Starting Price"
-      />
-      {formik.touched.price && formik.errors.price && (
-        <div style={{ color: 'red' }}>{formik.errors.price}</div>
+      {props.type == '' && (
+        <div style={{ color: 'red' }}>event type required</div>
       )}
       <>
-        <Heading pt={4} className="text-redDark" mb={2} as="h4" size="md">
-          Date - Time
-        </Heading>
-        <Input
-          border={2}
-          borderColor={'#A0153E'}
-          borderStyle={'solid'}
-          focusBorderColor={'gray.400'}
-          placeholder="Select Date and Time"
-          size="md"
-          type="datetime-local"
+        <InputFile name="file" onChange={handleChangeFile} />
+        {file == null && <div style={{ color: 'red' }}>File is required</div>}
+      </>
+      <>
+        {props.type == 'unpaid' ? null : (
+          <InputText
+            name="price"
+            value={formik.values.price}
+            onChange={formik.handleChange}
+            label="Starting Price"
+          />
+        )}
+
+        {formik.touched.price && formik.errors.price && (
+          <div style={{ color: 'red' }}>{formik.errors.price}</div>
+        )}
+      </>
+      <>
+        <InputDate
           name="dateTime"
+          label={'Date - Time'}
           value={formik.values.dateTime}
           onChange={formik.handleChange}
         />
@@ -126,50 +140,48 @@ export default function CreateEvent(props: any) {
           <div style={{ color: 'red' }}>{formik.errors.dateTime}</div>
         )}
       </>
-      <InputText
-        name="location"
-        value={formik.values.location}
-        onChange={formik.handleChange}
-        label="Location"
-      />
-      {formik.touched.location && formik.errors.location && (
-        <div style={{ color: 'red' }}>{formik.errors.location}</div>
-      )}
-      <InputText
-        name="description"
-        value={formik.values.description}
-        onChange={formik.handleChange}
-        label="Description"
-      />
-      {formik.touched.description && formik.errors.description && (
-        <div style={{ color: 'red' }}>{formik.errors.description}</div>
-      )}
       <>
-        <Heading pt={4} className="text-redDark" mb={2} as="h4" size="md">
-          Category
-        </Heading>
-        <Select
-          border={2}
-          borderColor={'#A0153E'}
-          borderStyle={'solid'}
-          color={'#A0153E'}
-          size="md"
+        <InputText
+          name="location"
+          value={formik.values.location}
+          onChange={formik.handleChange}
+          label="Location"
+        />
+        {formik.touched.location && formik.errors.location && (
+          <div style={{ color: 'red' }}>{formik.errors.location}</div>
+        )}
+      </>
+      <>
+        <InputText
+          name="description"
+          value={formik.values.description}
+          onChange={formik.handleChange}
+          label="Description"
+        />
+        {formik.touched.description && formik.errors.description && (
+          <div style={{ color: 'red' }}>{formik.errors.description}</div>
+        )}
+      </>
+      <>
+        <InputSelect
           name="categoryId"
+          label="Category"
           value={formik.values.categoryId}
           onChange={formik.handleChange}
-          placeholder="Choose category"
-        >
-          <option value="1">Music</option>
-          <option value="2">Nightlife</option>
-          <option value="3">Performing & Visual Arts</option>
-          <option value="4">Holidays</option>
-          <option value="5">Hobbies</option>
-          <option value="6">Food & Drink</option>
-        </Select>
+          options={[
+            { value: 1, label: 'Music' },
+            { value: 2, label: 'Nightlife' },
+            { value: 3, label: 'Performing & Visual Arts' },
+            { value: 4, label: 'Holidays' },
+            { value: 5, label: 'Hobbies' },
+            { value: 6, label: 'Food & Drink' },
+          ]}
+        />
         {formik.touched.categoryId && formik.errors.categoryId && (
           <div style={{ color: 'red' }}>{formik.errors.categoryId}</div>
         )}
       </>
+
       <VStack justifyContent={'end'} alignItems={'end'} mt={8} w={'100%'}>
         <Button type="submit" colorScheme="red">
           NEXT

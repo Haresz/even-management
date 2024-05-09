@@ -9,6 +9,7 @@ export function createEvent(
   time: string,
   location: string,
   description: string,
+  eventType: string,
   categoryId: any,
 ) {
   const formData = new FormData();
@@ -19,6 +20,7 @@ export function createEvent(
   formData.append('time', time);
   formData.append('location', location);
   formData.append('description', description);
+  formData.append('eventType', eventType);
   formData.append('categoryId', categoryId);
   return Axios.post(`http://localhost:8000/events/1`, formData, {
     headers: {
@@ -43,7 +45,7 @@ export function getAllEvent(page: number, category?: number, search?: string) {
 }
 
 export function getDetailevent(event_id: string) {
-  return Axios.get(`http://localhost:8000/events/detail/event/${event_id}`);
+  return Axios.get(`http://localhost:8000/events/detail/${event_id}`);
 }
 
 export function publishEvent(event_id: number) {
