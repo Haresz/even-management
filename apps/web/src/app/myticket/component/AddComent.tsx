@@ -13,14 +13,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import FormRating from '../FormRating';
 import { createReview } from '@/api/review';
 import { useParams } from 'next/navigation';
+import FormRating from './FormRating';
 
 export default function AddComent(props: any) {
   const [rating, setRating] = useState(0);
   const [feedBack, setFeedback] = useState('');
-  const params = useParams<{ id: string }>();
   const toast = useToast();
 
   const handleMouseOver = (index: any) => {
@@ -33,12 +32,7 @@ export default function AddComent(props: any) {
 
   const actionAddRating = async () => {
     try {
-      const response = await createReview(
-        parseInt(params.id),
-        1,
-        rating,
-        feedBack,
-      );
+      const response = await createReview(props.eventId, 1, rating, feedBack);
       toast({
         title: `Success to add rating`,
         status: 'success',

@@ -12,6 +12,11 @@ transactionRouter.post(
   eventController.eventTransaction,
 );
 
+transactionRouter.patch(
+  '/:transactionId',
+  transactionController.updateSatatusTransaction,
+);
+
 transactionRouter.get('/:userId', transactionController.getAllTransactionsUser);
 transactionRouter.get(
   '/detail/:transactionId',

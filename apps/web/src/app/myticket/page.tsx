@@ -44,6 +44,7 @@ export default function page() {
                 id={item.id}
                 transactionDate={item.createAt}
                 status={item.status}
+                eventId={event?.id}
                 eventDate={event?.date}
                 eventLocation={event?.location}
                 eventTitle={event?.eventName}
@@ -53,8 +54,6 @@ export default function page() {
               />
             );
           })}
-          <Card status="pending" />
-          <Card status="success" />
         </Box>
       </Box>
       <Footer />

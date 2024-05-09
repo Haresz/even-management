@@ -88,6 +88,7 @@ const getAllEvents = async (req: Request, res: Response) => {
       include: {
         category: true,
         ticket: true,
+        promotion: true,
       },
     });
     return res.status(200).send({

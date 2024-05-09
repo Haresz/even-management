@@ -12,11 +12,13 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import Popup from './Popup';
+import Review from './Review';
 
 export default function Card(props: any) {
   const {
     transactionDate,
     status,
+    eventId,
     eventDate,
     eventLocation,
     eventTitle,
@@ -76,14 +78,14 @@ export default function Card(props: any) {
           <Badge colorScheme="green">Succes</Badge>
         ) : null}
       </HStack>
-      <HStack w={'100%'} py={4} flex={3} alignItems={'start'}>
+      <HStack w={'100%'} flexWrap={'wrap'} py={4} flex={3} alignItems={'start'}>
         <Image
           className="object-cover h-full"
           src="/hero-landing.webp"
           borderLeftRadius={5}
           height={150}
         />
-        <VStack w={'100%'} ml={10} alignItems={'start'}>
+        <VStack maxW={'100%'} ml={{ base: 0, md: 10 }} alignItems={'start'}>
           <HStack>
             <Text fontWeight="semibold" size="sm" mr={8}>
               {eventLocation}
@@ -102,19 +104,20 @@ export default function Card(props: any) {
               )}`}
             </Text>
           </HStack>
-          <HStack h={'fit-content'} w="100%" justifyContent={'end'}>
-            {status == 'success' ? (
-              <Box mt={-16}>
-                <Btn title="Review" />
-              </Box>
-            ) : null}
-            <Box className="cursor-pointer" onClick={onOpen}>
-              <Text decoration="underline" fontWeight="semibold" size="sm">
-                View Transaction Details
-              </Text>
-            </Box>
-          </HStack>
         </VStack>
+        <HStack h={'fit-content'} w="100%" justifyContent={'end'}>
+          <Box className="cursor-pointer" onClick={onOpen}>
+            <Text
+              my={{ base: 10, md: 0 }}
+              decoration="underline"
+              fontWeight="semibold"
+              size="sm"
+            >
+              View Transaction Details
+            </Text>
+          </Box>
+          {status == 'success' ? <Review eventId={eventId} /> : null}
+        </HStack>
       </HStack>
       <Popup
         isOpen={isOpen}

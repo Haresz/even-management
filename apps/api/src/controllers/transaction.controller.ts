@@ -118,7 +118,6 @@ const getDetailTransaction = async (req: Request, res: Response) => {
       },
     });
 
-    console.log(repoTicketTransaction);
     return res.status(200).send({
       status: 200,
       success: true,
@@ -135,8 +134,34 @@ const getDetailTransaction = async (req: Request, res: Response) => {
   }
 };
 
+const updateSatatusTransaction = async (req: Request, res: Response) => {
+  const { transactionId } = req.params;
+  try {
+    const repoUpdateStatus = await prisma.transactions.update({
+      where: { id: parseInt(transactionId) },
+      data: {
+        status: 'success',
+      },
+    });
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'update status transactions successfuly',
+      data: repoUpdateStatus,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   addTransaction,
   getAllTransactionsUser,
   getDetailTransaction,
+  updateSatatusTransaction,
 };
