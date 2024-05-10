@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 
 export default function AddTicket(props: any) {
   const searchParams = useSearchParams();
-  const { setStep } = props;
+  const { setStep, step } = props;
   const [variant, setVariant] = useState(1);
   const [type, setType] = useState('');
   const id: any = searchParams.get('id');
@@ -16,6 +16,7 @@ export default function AddTicket(props: any) {
     try {
       const response = await getDetailevent(id);
       setType(response.data.data.eventType);
+      console.log(response.data.data.eventType);
     } catch (error) {
       console.error(error);
     }
@@ -23,7 +24,7 @@ export default function AddTicket(props: any) {
 
   useEffect(() => {
     getEvent();
-  }, []);
+  }, [step]);
   return (
     <Box mt={10}>
       {type == 'paid' ? (

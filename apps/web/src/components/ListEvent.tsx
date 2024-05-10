@@ -18,30 +18,25 @@ export default function ListEvent() {
   const [maxPage, setMaxPage] = useState(0);
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState<number | undefined>(undefined);
-  const [upComing, setUpComing] = useState<boolean>(false);
+  const [upComing, setUpComing] = useState<number | undefined>(undefined);
+  const [promotion, setPromotion] = useState<boolean | undefined>(undefined);
   const [searchTerm, setSearchTerm] = useState('');
 
   const getevent = async () => {
     try {
       let response;
 
-      response = await getAllEvent(page, category, searchTerm);
+      response = await getAllEvent(
+        page,
+        category,
+        searchTerm,
+        upComing,
+        promotion,
+      );
 
-      const currentDate = new Date().getTime();
-
-      const upcomingEvents = response.data.data.filter((item: any) => {
-        const eventDate = new Date(item.date).getTime();
-        const threeDaysBeforeEvent = currentDate + 3 * 24 * 60 * 60 * 1000;
-        return eventDate < threeDaysBeforeEvent;
-      });
-
-      if (upComing) {
-        setEvents(upcomingEvents);
-      } else {
-        setEvents(response.data.data);
-      }
       const maxPage = Math.ceil(response.data.count / 4);
       setMaxPage(maxPage);
+      setEvents(response.data.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -49,8 +44,23 @@ export default function ListEvent() {
 
   const tabsHandler = (catId: number | undefined) => {
     setCategory(catId);
+    setPromotion(undefined);
+    setUpComing(undefined);
     setPage(1);
-    setUpComing(false);
+  };
+
+  const promotionHandler = () => {
+    setCategory(undefined);
+    setPromotion(true);
+    setUpComing(undefined);
+    setPage(1);
+  };
+
+  const upcomingHandler = () => {
+    setCategory(undefined);
+    setPromotion(undefined);
+    setUpComing(7);
+    setPage(1);
   };
 
   const handleSearchChange = (value: string) => {
@@ -113,13 +123,12 @@ export default function ListEvent() {
           >
             <Text fontSize="sm">All</Text>
           </Tab>
-          <Tab
-            onClick={() => setUpComing(true)}
-            _selected={{ fontWeight: 'bold' }}
-          >
+          <Tab onClick={upcomingHandler} _selected={{ fontWeight: 'bold' }}>
             Upcoming
           </Tab>
-          <Tab _selected={{ fontWeight: 'bold' }}>Promotion</Tab>
+          <Tab onClick={promotionHandler} _selected={{ fontWeight: 'bold' }}>
+            Promotion
+          </Tab>
           <Tab
             onClick={() => tabsHandler(1)}
             _selected={{ fontWeight: 'bold' }}

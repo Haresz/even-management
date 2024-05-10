@@ -29,7 +29,13 @@ export function createEvent(
   });
 }
 
-export function getAllEvent(page: number, category?: number, search?: string) {
+export function getAllEvent(
+  page: number,
+  category?: number,
+  search?: string,
+  upcoming?: number,
+  promotion?: boolean,
+) {
   let url = `http://localhost:8000/events/?page=${page}`;
 
   if (category !== undefined) {
@@ -38,6 +44,14 @@ export function getAllEvent(page: number, category?: number, search?: string) {
 
   if (search !== undefined) {
     url += `&search=${search}`;
+  }
+
+  if (upcoming !== undefined) {
+    url += `&upcoming=${upcoming}`;
+  }
+
+  if (promotion !== undefined) {
+    url += `&promotion=${promotion}`;
   }
 
   const res = Axios.get(url);
