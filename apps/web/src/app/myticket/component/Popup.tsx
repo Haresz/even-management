@@ -49,21 +49,24 @@ export default function Popup(props: any) {
             </Text>
             <Text className=" text-redPrimary">{props.method}</Text>
           </HStack>
-          <VStack alignItems={'start'} my={4}>
-            <Text className="font-medium my-4" fontSize={'md'}>
-              Number virtual acount:
-            </Text>
-            <HStack
-              w="100%"
-              p={4}
-              justifyContent={'space-between'}
-              className=" border-2 border-blueDark rounded-md text-blueDark"
-            >
-              <Text className="font-medium" fontSize={'xl'}>
-                80777082225384814
+
+          {props.status == 'pending' ? (
+            <VStack alignItems={'start'} my={4}>
+              <Text className="font-medium my-4" fontSize={'md'}>
+                Number virtual acount:
               </Text>
-            </HStack>
-          </VStack>
+              <HStack
+                w="100%"
+                p={4}
+                justifyContent={'space-between'}
+                className=" border-2 border-blueDark rounded-md text-blueDark"
+              >
+                <Text className="font-medium" fontSize={'xl'}>
+                  80777082225384814
+                </Text>
+              </HStack>
+            </VStack>
+          ) : null}
           <PopupOrderSumary id={props.id} />
         </ModalBody>
         <ModalFooter>
