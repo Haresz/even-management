@@ -5,6 +5,7 @@ export default function PriceGetTicket(props: any) {
   const price = props.ticket?.map((item: any) => {
     return item.price;
   });
+  console.log(price);
   const rupiah = (number: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -19,7 +20,7 @@ export default function PriceGetTicket(props: any) {
         py={26}
         className="border-2 border-redDark border-dashed rounded-md text-center font-semibold"
       >
-        {price && price.length > 0 ? (
+        {price && price[0] != 0 ? (
           <>
             <Text fontSize="lg">
               {rupiah(Math.min(...price))} - {rupiah(Math.max(...price))}
@@ -40,9 +41,25 @@ export default function PriceGetTicket(props: any) {
             </Button>
           </>
         ) : (
-          <Text className=" text-redPrimary" fontSize="5xl">
-            Free
-          </Text>
+          <>
+            <Text className=" text-redPrimary" fontSize="5xl">
+              Free
+            </Text>
+            <Button
+              backgroundColor={'#FF204E'}
+              color={'white'}
+              mt={4}
+              onClick={props.onClick}
+              _hover={{
+                color: '#FF204E',
+                backgroundColor: 'white',
+                border: '1px',
+              }}
+              variant="solid"
+            >
+              <Text fontSize="xl">GET EVENT</Text>
+            </Button>
+          </>
         )}
       </Box>
     </HStack>

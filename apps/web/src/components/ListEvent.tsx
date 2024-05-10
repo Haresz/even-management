@@ -32,6 +32,7 @@ export default function ListEvent() {
         searchTerm,
         upComing,
         promotion,
+        true,
       );
 
       const maxPage = Math.ceil(response.data.count / 4);

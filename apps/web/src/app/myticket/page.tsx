@@ -8,7 +8,6 @@ import Footer from '@/components/Footer';
 
 export default function page() {
   const [transaction, setTransaction] = useState<any>([]);
-  const [event, setEvent] = useState<any>();
 
   const getTransaction = async () => {
     try {
@@ -22,12 +21,6 @@ export default function page() {
   useEffect(() => {
     getTransaction();
   }, []);
-
-  useEffect(() => {
-    if (transaction.length > 0 && transaction[0].ticket) {
-      setEvent(transaction[0].ticket[0].ticket.event);
-    }
-  }, [transaction]);
 
   return (
     <>
@@ -44,10 +37,10 @@ export default function page() {
                 id={item.id}
                 transactionDate={item.createAt}
                 status={item.status}
-                eventId={event?.id}
-                eventDate={event?.date}
-                eventLocation={event?.location}
-                eventTitle={event?.eventName}
+                eventId={item?.ticket[0].ticket.event.id}
+                eventDate={item?.ticket[0].ticket.event.date}
+                eventLocation={item?.ticket[0].ticket.event.location}
+                eventTitle={item?.ticket[0].ticket.event.eventName}
                 ticket={item?.ticket}
                 method={item?.method}
                 deadline={item?.deadline}

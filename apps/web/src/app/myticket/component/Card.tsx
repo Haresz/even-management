@@ -27,6 +27,8 @@ export default function Card(props: any) {
     method,
     deadline,
   } = props;
+
+  console.log(props);
   const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [overlay, setOverlay] = React.useState(<OverlayOne />);

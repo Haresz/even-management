@@ -35,6 +35,7 @@ export function getAllEvent(
   search?: string,
   upcoming?: number,
   promotion?: boolean,
+  publish?: boolean,
 ) {
   let url = `http://localhost:8000/events/?page=${page}`;
 
@@ -52,6 +53,10 @@ export function getAllEvent(
 
   if (promotion !== undefined) {
     url += `&promotion=${promotion}`;
+  }
+
+  if (publish !== undefined) {
+    url += `&publish=${publish}`;
   }
 
   const res = Axios.get(url);
