@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { genSalt, hash, compare } from 'bcrypt';
+import { sign, verify } from 'jsonwebtoken';
+
 import prisma from '../prisma';
 
 const registerUser = async (req: Request, res: Response) => {
@@ -24,11 +27,14 @@ const registerUser = async (req: Request, res: Response) => {
       });
     }
 
+    const salt = await genSalt(10);
+    const hashedPassword: string = await hash(password as string, salt);
+    console.log(hashedPassword, 'password-reg');
     const addUser = await prisma.users.create({
       data: {
         username,
         email,
-        password,
+        password: hashedPassword,
         referrallCode: 'AWEAWE',
         points: '0',
       },
@@ -57,19 +63,26 @@ const loginUser = async (req: Request, res: Response) => {
       where: { email },
     });
 
-    if (!existingUser && password != existingUser.password) {
+    const isValidPassword = await compare(password, existingUser.password);
+    if (!isValidPassword) {
       return res.status(401).send({
         status: 401,
         success: false,
         message: 'invalid email or password',
       });
     }
+
+    const jwtPayload = { email };
+    const token = sign(jwtPayload, String(process.env.KEY_SECRET), {
+      expiresIn: '1h',
+    });
     delete existingUser.password;
     return res.status(201).send({
       status: 201,
       success: true,
       message: 'login successfully',
       data: existingUser,
+      token: token,
     });
   } catch (error) {
     console.log(error);
@@ -105,8 +118,54 @@ const findUniqeId = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const verifyTokenController = async (
+  req: Request | any,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Invalid token, unauthorized',
+      });
+    }
+
+    const verifyedUser = verify(
+      token,
+      String(process.env.KEY_SECRET),
+    ) as User | null;
+    if (!verifyedUser) {
+      return res.status(401).send({
+        status: 401,
+        success: false,
+        message: 'Expried token or invalid token',
+      });
+    }
+
+    req.user = verifyedUser;
+
+    next();
+  } catch (error) {
+    console.log(error);
+    return res.status(401).send({
+      status: 401,
+      success: false,
+      message: (error as Error).message,
+    });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
   findUniqeId,
 };
+
+interface User {
+  username: string;
+  email: string;
+  password: string;
+}

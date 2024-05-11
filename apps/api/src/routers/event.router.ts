@@ -3,6 +3,7 @@ import eventController from '../controllers/event.controller';
 import { uplouder } from '../middlewares/uploder';
 import ticketController from '../controllers/ticket.controller';
 import promotionController from '../controllers/promotion.controller';
+import { verifyTokenController } from '../controllers/user.controller';
 
 const eventRouter = Router();
 
@@ -14,6 +15,7 @@ eventRouter.post(
 
 eventRouter.get(
   '/',
+  verifyTokenController,
   promotionController.updateIsActive,
   eventController.getAllEvents,
 );
