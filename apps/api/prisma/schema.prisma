@@ -116,6 +116,7 @@ model Promotions {
   discount String
   startDate DateTime @default(now())
   endDate DateTime
+  isActive Boolean @default(false)
   codeReferal String
   event Events @relation(fields: [eventId], references: [id])
 }

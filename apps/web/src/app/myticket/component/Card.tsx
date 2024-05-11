@@ -78,7 +78,9 @@ export default function Card(props: any) {
           <Badge colorScheme="yellow">Pending</Badge>
         ) : status == 'success' ? (
           <Badge colorScheme="green">Succes</Badge>
-        ) : null}
+        ) : (
+          <Badge colorScheme="red">Failed</Badge>
+        )}
       </HStack>
       <HStack w={'100%'} flexWrap={'wrap'} py={4} flex={3} alignItems={'start'}>
         <Image

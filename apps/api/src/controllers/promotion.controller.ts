@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const addPromotion = async (req: Request, res: Response) => {
@@ -32,6 +32,38 @@ const addPromotion = async (req: Request, res: Response) => {
   }
 };
 
+const updateIsActive = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const now = new Date();
+    const promotionIsActive: any = await prisma.promotions.updateMany({
+      where: {
+        startDate: {
+          lte: now,
+        },
+        endDate: {
+          gte: now,
+        },
+      },
+      data: {
+        isActive: true,
+      },
+    });
+
+    next();
+  } catch (error) {
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   addPromotion,
+  updateIsActive,
 };

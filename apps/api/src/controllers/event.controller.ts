@@ -2,8 +2,16 @@ import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const addEvent = async (req: Request, res: Response, next: NextFunction) => {
-  let { eventName, price, date, time, location, description, categoryId } =
-    req.body;
+  let {
+    eventName,
+    price,
+    date,
+    time,
+    location,
+    description,
+    eventType,
+    categoryId,
+  } = req.body;
   const { file } = req;
   try {
     if (
@@ -32,6 +40,7 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
         time,
         location,
         description,
+        eventType,
         categoryId: parseInt(categoryId),
       },
     });
@@ -57,29 +66,84 @@ const addEvent = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllEvents = async (req: Request, res: Response) => {
-  const { category, page, serach }: any = req.query;
+  const { category, page, search, promotion, upcoming, publish }: any =
+    req.query;
   const pageN = parseInt(page) * 4 - 4;
+
+  let futureDate = new Date();
+  if (upcoming) {
+    futureDate.setDate(futureDate.getDate() + parseInt(upcoming));
+  }
 
   try {
     const count = await prisma.events.aggregate({
       where: {
         ...(category ? { categoryId: parseInt(category) } : {}),
+        ...(search
+          ? {
+              OR: [
+                { eventName: { contains: search } },
+                { location: { contains: search } },
+              ],
+            }
+          : {}),
+        ...(promotion
+          ? {
+              promotion: {
+                some: {
+                  isActive: Boolean(promotion),
+                },
+              },
+            }
+          : {}),
+        ...(upcoming
+          ? {
+              date: {
+                gt: futureDate,
+              },
+            }
+          : {}),
+        ...(publish
+          ? {
+              published: true,
+            }
+          : {}),
       },
       _count: {
         _all: true,
       },
     });
-    const repoGetAllEvents = await prisma.events.findMany({
+
+    let repoGetAllEvents = await prisma.events.findMany({
       where: {
         ...(category ? { categoryId: parseInt(category) } : {}),
-        ...(serach
+        ...(search
           ? {
-              eventName: {
-                search: serach,
+              OR: [
+                { eventName: { contains: search } },
+                { location: { contains: search } },
+              ],
+            }
+          : {}),
+        ...(promotion
+          ? {
+              promotion: {
+                some: {
+                  isActive: Boolean(promotion),
+                },
               },
-              location: {
-                search: serach,
+            }
+          : {}),
+        ...(upcoming
+          ? {
+              date: {
+                gt: futureDate,
               },
+            }
+          : {}),
+        ...(publish
+          ? {
+              published: true,
             }
           : {}),
       },
@@ -91,6 +155,7 @@ const getAllEvents = async (req: Request, res: Response) => {
         promotion: true,
       },
     });
+
     return res.status(200).send({
       status: 200,
       success: true,

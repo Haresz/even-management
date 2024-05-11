@@ -63,6 +63,19 @@ const addTransaction = async (
 const getAllTransactionsUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
+    const repoCangeStatus = await prisma.transactions.updateMany({
+      where: {
+        userId: parseInt(userId),
+        status: 'pending',
+        deadline: {
+          gt: new Date(),
+        },
+      },
+      data: {
+        status: 'failed',
+      },
+    });
+
     const repoGetAllTransactionsUser: any = await prisma.transactions.findMany({
       where: { userId: parseInt(userId) },
       include: {

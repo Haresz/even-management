@@ -2,6 +2,7 @@ import { Router } from 'express';
 import eventController from '../controllers/event.controller';
 import { uplouder } from '../middlewares/uploder';
 import ticketController from '../controllers/ticket.controller';
+import promotionController from '../controllers/promotion.controller';
 
 const eventRouter = Router();
 
@@ -11,9 +12,13 @@ eventRouter.post(
   eventController.addEvent,
 );
 
-eventRouter.get('/', eventController.getAllEvents);
 eventRouter.get(
-  '/detail/event/:id',
+  '/',
+  promotionController.updateIsActive,
+  eventController.getAllEvents,
+);
+eventRouter.get(
+  '/detail/:id',
   eventController.findIdEvent,
   eventController.getDetailEvents,
 );

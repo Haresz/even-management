@@ -2,8 +2,20 @@ import { NextFunction, Request, Response } from 'express';
 import prisma from '../prisma';
 
 const registerUser = async (req: Request, res: Response) => {
+  const { username, email, password } = req.body;
   try {
-    const { username, email, password } = req.body;
+    const existingUser = await prisma.users.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(401).send({
+        status: 401,
+        sucsses: false,
+        message: 'email already registered',
+      });
+    }
+
     if (!username || !email || !password) {
       return res.status(403).send({
         status: 401,
@@ -11,6 +23,7 @@ const registerUser = async (req: Request, res: Response) => {
         message: 'input invalid',
       });
     }
+
     const addUser = await prisma.users.create({
       data: {
         username,
@@ -20,6 +33,7 @@ const registerUser = async (req: Request, res: Response) => {
         points: '0',
       },
     });
+
     return res.status(201).send({
       status: 201,
       success: true,
