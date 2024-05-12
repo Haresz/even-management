@@ -5,6 +5,7 @@ export function registerUser(
   email: string,
   password: string,
 ) {
+  console.log(username + ' ' + email + ' ' + password);
   return Axios.post(`http://localhost:8000/user/register`, {
     username,
     email,
@@ -12,13 +13,19 @@ export function registerUser(
   });
 }
 
-export function loginRegister(email: string, password: string) {
+export function loginUser(email: string, password: string) {
   return Axios.post(`http://localhost:8000/user/login`, {
     email,
     password,
   });
 }
 
-export function switchRole(id_user: number) {
-  return Axios.post(`http://localhost:8000/user/switch/${id_user}`);
+export function detailUser(id: number) {
+  return Axios.get(`http://localhost:8000/user/detail/${id}`);
+}
+
+export function switchRole(id_user: number, token: any) {
+  return Axios.post(`http://localhost:8000/user/switch/${id_user}`, {
+    headers: { Authorization: token },
+  });
 }

@@ -32,7 +32,15 @@ export default function AddComent(props: any) {
 
   const actionAddRating = async () => {
     try {
-      const response = await createReview(props.eventId, 1, rating, feedBack);
+      const token = localStorage.getItem('token');
+      const id: any = localStorage.getItem('id');
+      const response = await createReview(
+        props.eventId,
+        id,
+        rating,
+        feedBack,
+        token,
+      );
       toast({
         title: `Success to add rating`,
         status: 'success',

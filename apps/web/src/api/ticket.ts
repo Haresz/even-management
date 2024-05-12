@@ -5,12 +5,21 @@ export function createTicket(
   ticketType: string,
   price: number,
   AvailableTicket: number,
+  token: any,
 ) {
-  return Axios.post(`http://localhost:8000/ticket/${id_event}`, {
-    ticketType,
-    price,
-    AvailableTicket,
-  });
+  return Axios.post(
+    `http://localhost:8000/ticket/${id_event}`,
+    {
+      ticketType,
+      price,
+      AvailableTicket,
+    },
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }
 
 export function deleteTicket(id_ticket: number) {

@@ -18,13 +18,15 @@ export default function FormTicket(props: { id: number; type: string }) {
 
   const actionAddTicket = async (values: any) => {
     if (props.type == 'unpaid') values.price = '0';
-    console.log(values);
+    const token = localStorage.getItem('token');
+
     try {
       const response = await createTicket(
         parseInt(id),
         values.ticketType,
         values.price,
         values.count,
+        token,
       );
       toast({
         title: `Success to add ticket ${values.ticketType}`,

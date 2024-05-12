@@ -29,8 +29,10 @@ export default function CreateEvent(props: any) {
     const minutes = dateTime.getMinutes().toString().padStart(2, '0');
     const time = `${hours}:${minutes}`;
     try {
+      const token = localStorage.getItem('token');
+      const id: any = localStorage.getItem('id');
       const response = await createEvent(
-        1,
+        id,
         values.eventName,
         file,
         values.price,
@@ -40,6 +42,7 @@ export default function CreateEvent(props: any) {
         values.description,
         props.type,
         values.categoryId,
+        token,
       );
       props.setStep(2);
       router.push(`/addevent?id=${response.data.data.event.id}`);
@@ -82,6 +85,21 @@ export default function CreateEvent(props: any) {
   const handleChangeType = (e: any) => {
     props.setType(e.target.value);
     console.log(e.target.value);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token || isTokenExpired(token)) {
+      router.push('/');
+    }
+  }, []);
+
+  const isTokenExpired = (token: any) => {
+    const creationTime: any = localStorage.getItem('created');
+    const expirationTime: any = new Date(creationTime + 60 * 60 * 1000);
+
+    return expirationTime < Date.now();
   };
 
   return (

@@ -27,16 +27,16 @@ export default function AddTicket(props: any) {
   }, [step]);
   return (
     <Box mt={10}>
-      {type == 'paid' ? (
+      {type == 'unpaid' ? (
+        <FormTicket id={0} type={type} />
+      ) : (
         Array.from({ length: variant }, (_, index) => (
           <FormTicket id={props.id} key={index} type={type} />
         ))
-      ) : (
-        <FormTicket id={0} type={type} />
       )}
 
       <HStack justifyContent={'end'} alignItems={'end'} my={8} w={'100%'}>
-        {type == 'paid' ? (
+        {type == 'unpaid' ? null : (
           <Button
             onClick={() => setVariant(variant + 1)}
             variant="outline"
@@ -44,7 +44,7 @@ export default function AddTicket(props: any) {
           >
             ADD VARIANT
           </Button>
-        ) : null}
+        )}
 
         <Button onClick={() => setStep(3)} colorScheme="red">
           NEXT

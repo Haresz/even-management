@@ -9,13 +9,13 @@ const eventRouter = Router();
 
 eventRouter.post(
   '/:id',
+  verifyTokenController,
   uplouder('IMG', '/images').single('file'),
   eventController.addEvent,
 );
 
 eventRouter.get(
   '/',
-  verifyTokenController,
   promotionController.updateIsActive,
   eventController.getAllEvents,
 );
@@ -27,17 +27,20 @@ eventRouter.get(
 
 eventRouter.patch(
   '/:id',
+  verifyTokenController,
   eventController.findIdEvent,
   eventController.updateEvents,
 );
 eventRouter.patch(
   '/publish/:id',
+  verifyTokenController,
   eventController.findIdEvent,
   eventController.publishEvent,
 );
 
 eventRouter.delete(
   '/:id',
+  verifyTokenController,
   eventController.findIdEvent,
   ticketController.deleteTicketEvent,
   eventController.deleteEvents,

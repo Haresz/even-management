@@ -11,6 +11,7 @@ export function createEvent(
   description: string,
   eventType: string,
   categoryId: any,
+  token: any,
 ) {
   const formData = new FormData();
   formData.append('eventName', eventName);
@@ -22,9 +23,10 @@ export function createEvent(
   formData.append('description', description);
   formData.append('eventType', eventType);
   formData.append('categoryId', categoryId);
-  return Axios.post(`http://localhost:8000/events/1`, formData, {
+  return Axios.post(`http://localhost:8000/events/2`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
+      Authorization: token,
     },
   });
 }
@@ -67,8 +69,16 @@ export function getDetailevent(event_id: string) {
   return Axios.get(`http://localhost:8000/events/detail/${event_id}`);
 }
 
-export function publishEvent(event_id: number) {
-  return Axios.patch(`http://localhost:8000/events/publish/${event_id}`);
+export function publishEvent(event_id: number, token: string) {
+  return Axios.patch(
+    `http://localhost:8000/events/publish/${event_id}`,
+    {},
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }
 
 export function updateEvent(
@@ -80,18 +90,31 @@ export function updateEvent(
   location: string,
   description: string,
   category_id: number,
+  token: any,
 ) {
-  return Axios.patch(`http://localhost:8000/events/${event_id}`, {
-    file,
-    price,
-    date,
-    time,
-    location,
-    description,
-    category_id,
-  });
+  return Axios.patch(
+    `http://localhost:8000/events/${event_id}`,
+    {
+      file,
+      price,
+      date,
+      time,
+      location,
+      description,
+      category_id,
+    },
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }
 
-export function deleteEvent(event_id: number) {
-  return Axios.delete(`http://localhost:8000/events/${event_id}`);
+export function deleteEvent(event_id: number, token: any) {
+  return Axios.delete(`http://localhost:8000/events/${event_id}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
 }

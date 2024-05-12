@@ -1,3 +1,4 @@
+'use client';
 import {
   Box,
   Button,
@@ -7,12 +8,61 @@ import {
   VStack,
   Text,
   Hide,
+  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import InputText from '../component/InputText';
 import Link from 'next/link';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { registerUser } from '@/api/auth';
+import { useRouter } from 'next/navigation';
+
+const registerSchema = Yup.object().shape({
+  username: Yup.string().required('username must be provided'),
+  email: Yup.string().required('email must be provided'),
+  password: Yup.string().required('password must be provided'),
+});
 
 export default function page() {
+  const router = useRouter();
+  const toast = useToast();
+
+  const handleRegister = async (values: any) => {
+    try {
+      const response = await registerUser(
+        values.username,
+        values.email,
+        values.password,
+      );
+      router.push('/');
+      toast({
+        title: `register successfully`,
+        status: 'success',
+        position: 'top',
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: `register failed`,
+        status: 'error',
+        position: 'top',
+        isClosable: true,
+      });
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+    },
+    validationSchema: registerSchema,
+    onSubmit: (values: any) => {
+      handleRegister(values);
+    },
+  });
   return (
     <HStack>
       <VStack
@@ -34,17 +84,56 @@ export default function page() {
           <Heading as="h4" size="xl">
             REGISTER
           </Heading>
-          <Box className="my-12 w-full">
-            <InputText label="Username" />
-            <InputText label="Email" />
-            <InputText label="Password" />
-          </Box>
-          <Button w={'100%'} colorScheme="white" variant="outline">
-            Submit
-          </Button>
+          <form className="w-full" onSubmit={formik.handleSubmit}>
+            <Box className="my-12">
+              <InputText
+                name="username"
+                label="Username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+              />
+              {formik.touched.username && formik.errors.username && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.username as string}
+                </div>
+              )}
+              <InputText
+                name="email"
+                label="Email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+              />
+              {formik.touched.email && formik.errors.email && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.email as string}
+                </div>
+              )}
+              <InputText
+                name="password"
+                label="Password"
+                type="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+              />
+              {formik.touched.password && formik.errors.password && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.password as string}
+                </div>
+              )}
+            </Box>
+            <Button
+              type="submit"
+              w={'100%'}
+              colorScheme="white"
+              variant="outline"
+            >
+              Submit
+            </Button>
+          </form>
+
           <Text mt={4}>
             have a account ?{' '}
-            <Link className=" underline" href={'/auth/register'}>
+            <Link className=" underline" href={'/'}>
               Login your account
             </Link>
           </Text>

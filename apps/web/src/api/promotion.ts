@@ -7,12 +7,21 @@ export function createPromotion(
   endDate: Date,
   discount: number,
   codeReferal: string,
+  token: any,
 ) {
-  return Axios.post(`http://localhost:8000/promotion/${eventId}`, {
-    name,
-    startDate,
-    endDate,
-    discount,
-    codeReferal,
-  });
+  return Axios.post(
+    `http://localhost:8000/promotion/${eventId}`,
+    {
+      name,
+      startDate,
+      endDate,
+      discount,
+      codeReferal,
+    },
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }

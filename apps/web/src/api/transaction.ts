@@ -5,12 +5,21 @@ export function createTransaction(
   id_user: number,
   method: string,
   deadline: any,
+  token: any,
 ) {
-  return Axios.post(`http://localhost:8000/transaction/${id_user}`, {
-    data,
-    method,
-    deadline,
-  });
+  return Axios.post(
+    `http://localhost:8000/transaction/${id_user}`,
+    {
+      data,
+      method,
+      deadline,
+    },
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }
 
 export function getAllTransactionUser(id_user: number) {

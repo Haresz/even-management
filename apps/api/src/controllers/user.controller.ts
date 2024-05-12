@@ -6,6 +6,7 @@ import prisma from '../prisma';
 
 const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
+  console.log(req.body);
   try {
     const existingUser = await prisma.users.findUnique({
       where: { email },
@@ -125,6 +126,7 @@ export const verifyTokenController = async (
 ) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
+    console.log(token);
     if (!token) {
       return res.status(401).send({
         status: 401,
@@ -158,10 +160,32 @@ export const verifyTokenController = async (
   }
 };
 
+const detailUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const repoDetailUser = await prisma.users.findUnique({
+      where: { id: parseInt(id) },
+    });
+    return res.status(200).send({
+      status: 200,
+      success: true,
+      message: 'get user successfully',
+      data: repoDetailUser,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      status: 500,
+      message: 'server error',
+      error: (error as Error).message,
+    });
+  }
+};
+
 export default {
   registerUser,
   loginUser,
   findUniqeId,
+  detailUser,
 };
 
 interface User {

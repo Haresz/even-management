@@ -68,7 +68,7 @@ const getAllTransactionsUser = async (req: Request, res: Response) => {
         userId: parseInt(userId),
         status: 'pending',
         deadline: {
-          gt: new Date(),
+          lt: new Date(),
         },
       },
       data: {

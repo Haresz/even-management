@@ -31,14 +31,15 @@ export default function PublishEvent(props: any) {
 
   const publish = async () => {
     try {
-      const response = await publishEvent(id);
+      const token: any = localStorage.getItem('token');
+      const response = await publishEvent(id, token);
       toast({
         title: `Success to publish event`,
         status: 'success',
         position: 'top',
         isClosable: true,
       });
-      router.push('/');
+      router.push('/home');
     } catch (error) {
       toast({
         title: `Failed to publish event`,

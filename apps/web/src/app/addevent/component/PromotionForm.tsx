@@ -28,6 +28,8 @@ const promotionSchema = Yup.object().shape({
 export default function PromotionForm(props: any) {
   const toast = useToast();
   const actionAddPromotion = async (values: any) => {
+    const token = localStorage.getItem('token');
+
     try {
       const response = await createPromotion(
         props.id,
@@ -36,6 +38,7 @@ export default function PromotionForm(props: any) {
         values.endDate,
         values.discount,
         values.codeReferal,
+        token,
       );
       toast({
         title: `Success to add promotion`,

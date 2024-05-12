@@ -22,12 +22,16 @@ export default function CodePayment(props: any) {
   const currentTime = new Date();
   const deadline = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
   const handleTransaction = async () => {
+    const token = localStorage.getItem('token');
+    const id: any = localStorage.getItem('id');
+
     try {
       const response = await createTransaction(
         transaction,
-        1,
+        id,
         method,
         deadline,
+        token,
       );
       if (response.status === 201) {
         toast({

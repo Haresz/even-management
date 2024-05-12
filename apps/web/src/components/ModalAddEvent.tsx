@@ -5,9 +5,8 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  HStack,
-  Image,
   Heading,
+  Box,
 } from '@chakra-ui/react';
 import React from 'react';
 import Btn from './Btn';
@@ -15,9 +14,12 @@ import { switchRole } from '@/api/auth';
 
 export default function ModalAddevent(props: any) {
   const actionSwitch = async () => {
+    const token = localStorage.getItem('token');
+    const id: any = localStorage.getItem('id');
     try {
       props.onClose();
-      const response = await switchRole(1);
+      const response = await switchRole(id, token);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -27,17 +29,16 @@ export default function ModalAddevent(props: any) {
       <ModalOverlay />
       <ModalContent justifyContent={'center'}>
         <ModalCloseButton />
-        <ModalBody>
-          <HStack justifyContent={'center'}>
-            <Image mt={20} mb={8} src="envelope_front.webp" />
-          </HStack>
-          <Heading color={'#5D0E41'} textAlign={'center'} as="h2" size="lg">
-            Please verifikasi your email
-          </Heading>
-        </ModalBody>
-        <ModalFooter mt={-8} mb={8} justifyContent={'center'}>
-          <Btn onClick={actionSwitch} title={'VERIFIKASI'} />
-        </ModalFooter>
+        <Box className="py-6">
+          <ModalBody>
+            <Heading color={'#5D0E41'} textAlign={'center'} as="h2" size="lg">
+              Are you sure you want to become an EO?
+            </Heading>
+          </ModalBody>
+          <ModalFooter justifyContent={'center'}>
+            <Btn onClick={() => actionSwitch()} title={'VERIFIKASI'} />
+          </ModalFooter>
+        </Box>
       </ModalContent>
     </Modal>
   );
