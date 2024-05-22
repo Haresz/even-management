@@ -6,7 +6,7 @@ export const withAuth = () => {
     const router = useRouter();
 
     useEffect(() => {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
 
       if (!token || isTokenExpired(token)) {
         router.push('/login');
@@ -17,7 +17,7 @@ export const withAuth = () => {
   };
 
   const isTokenExpired = (token: any) => {
-    const creationTime: any = localStorage.getItem('created');
+    const creationTime: any = sessionStorage.getItem('created');
     const expirationTime: any = new Date(
       creationTime.getTime() + 60 * 60 * 1000,
     );

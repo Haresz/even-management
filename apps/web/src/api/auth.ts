@@ -25,7 +25,12 @@ export function detailUser(id: number) {
 }
 
 export function switchRole(id_user: number, token: any) {
-  return Axios.post(`http://localhost:8000/user/switch/${id_user}`, {
-    headers: { Authorization: token },
-  });
+  console.log(token);
+  return Axios.post(
+    `http://localhost:8000/user/switch/${id_user}`,
+    {},
+    {
+      headers: { Authorization: token },
+    },
+  );
 }

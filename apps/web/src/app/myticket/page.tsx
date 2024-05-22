@@ -10,10 +10,10 @@ export default function page() {
   const [transaction, setTransaction] = useState<any>([]);
 
   const getTransaction = async () => {
-    const id = localStorage.getItem('id');
+    const id = sessionStorage.getItem('id');
 
     try {
-      const response = await getAllTransactionUser(id);
+      const response = await getAllTransactionUser(parseInt(id as string));
       setTransaction(response.data.data);
     } catch (error) {
       console.log(error);

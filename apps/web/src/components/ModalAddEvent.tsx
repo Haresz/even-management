@@ -7,19 +7,28 @@ import {
   ModalFooter,
   Heading,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import Btn from './Btn';
 import { switchRole } from '@/api/auth';
 
 export default function ModalAddevent(props: any) {
+  const toast = useToast();
   const actionSwitch = async () => {
-    const token = localStorage.getItem('token');
-    const id: any = localStorage.getItem('id');
+    const token = sessionStorage.getItem('token');
+    const id: any = sessionStorage.getItem('id');
     try {
       props.onClose();
       const response = await switchRole(id, token);
       console.log(response);
+      toast({
+        title: `switch role successfully`,
+        status: 'success',
+        position: 'top',
+        isClosable: true,
+      });
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

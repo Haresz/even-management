@@ -1,4 +1,5 @@
 'use client';
+
 import { Box } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import SteperComponent from './component/SteperComponent';
@@ -8,36 +9,29 @@ import CreateEvent from './component/CreateEvent';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
-export default function page() {
+export default function Page() {
   const [step, setStep] = useState(1);
-  const [idEvent, setEventId] = useState();
-  const [dataEvent, setEvent] = useState();
   const [type, setType] = useState<any>();
+
+  const renderStepComponent = () => {
+    switch (step) {
+      case 1:
+        return <CreateEvent type={type} setType={setType} setStep={setStep} />;
+      case 2:
+        return <AddTicket step={step} setStep={setStep} />;
+      case 3:
+        return <PublishEvent />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
       <Navbar />
       <Box px={{ base: 4, sm: 16 }} mt={20} minH={'100vh'}>
         <SteperComponent step={step} />
-        {step == 1 ? (
-          <CreateEvent
-            step={step}
-            type={type}
-            setType={setType}
-            setStep={setStep}
-            setEvent={setEvent}
-            setEventId={setEventId}
-          />
-        ) : step == 2 ? (
-          <AddTicket step={step} setStep={setStep} id={idEvent} />
-        ) : (
-          <PublishEvent
-            step={step}
-            setStep={setStep}
-            id={idEvent}
-            dataEvent={dataEvent}
-          />
-        )}
+        {renderStepComponent()}
       </Box>
       <Footer />
     </>

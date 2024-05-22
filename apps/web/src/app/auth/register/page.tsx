@@ -9,6 +9,8 @@ import {
   Text,
   Hide,
   useToast,
+  useDisclosure,
+  ModalOverlay,
 } from '@chakra-ui/react';
 import React from 'react';
 import InputText from '../component/InputText';
@@ -17,6 +19,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '@/api/auth';
 import { useRouter } from 'next/navigation';
+import ModalLoading from '@/components/ModalLoading';
 
 const registerSchema = Yup.object().shape({
   username: Yup.string().required('username must be provided'),
@@ -25,31 +28,43 @@ const registerSchema = Yup.object().shape({
 });
 
 export default function page() {
+  const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
   const router = useRouter();
   const toast = useToast();
 
-  const handleRegister = async (values: any) => {
-    try {
-      const response = await registerUser(
-        values.username,
-        values.email,
-        values.password,
-      );
-      router.push('/');
-      toast({
-        title: `register successfully`,
-        status: 'success',
+  const handleRegister = (values: any) => {
+    const registerPromise = new Promise((resolve, reject) => {
+      registerUser(values.username, values.email, values.password)
+        .then((response) => {
+          resolve(response);
+          setOverlay(<OverlayOne />);
+          onOpen();
+          router.push('/');
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+
+    toast.promise(registerPromise, {
+      success: {
+        title: 'Register successfully',
         position: 'top',
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: `register failed`,
-        status: 'error',
+        description: 'Your account has been created.',
+      },
+      error: {
+        title: 'Register failed',
         position: 'top',
-        isClosable: true,
-      });
-    }
+        description: 'There was an issue creating your account.',
+      },
+      loading: {
+        title: 'Registering',
+        position: 'top',
+        description: 'Please wait while we create your account.',
+      },
+    });
   };
 
   const formik = useFormik({
@@ -149,6 +164,7 @@ export default function page() {
           <Image className="h-screen" src="/sound.svg" />
         </HStack>
       </Hide>
+      <ModalLoading onClose={onClose} isOpen={isOpen} overlay={overlay} />
     </HStack>
   );
 }

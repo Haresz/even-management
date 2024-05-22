@@ -32,8 +32,8 @@ export default function AddComent(props: any) {
 
   const actionAddRating = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const id: any = localStorage.getItem('id');
+      const token = sessionStorage.getItem('token');
+      const id: any = sessionStorage.getItem('id');
       const response = await createReview(
         props.eventId,
         id,

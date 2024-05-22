@@ -126,7 +126,7 @@ export const verifyTokenController = async (
 ) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
-    console.log(token);
+    console.log(token, 'ini token');
     if (!token) {
       return res.status(401).send({
         status: 401,

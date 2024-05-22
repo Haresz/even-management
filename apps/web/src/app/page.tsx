@@ -9,6 +9,8 @@ import {
   Text,
   Hide,
   useToast,
+  ModalOverlay,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
 import InputText from '../app/auth/component/InputText';
@@ -17,6 +19,7 @@ import * as Yup from 'yup';
 import { loginUser } from '@/api/auth';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
+import ModalLoading from '@/components/ModalLoading';
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().required('email must be provided'),
@@ -24,30 +27,44 @@ const loginSchema = Yup.object().shape({
 });
 
 export default function page() {
+  const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
   const router = useRouter();
   const toast = useToast();
 
-  const handleLogin = async (values: any) => {
-    try {
-      const response: any = await loginUser(values.email, values.password);
-      router.push('/home');
-      toast({
+  const handleLogin = (values: any) => {
+    const loginPromise: any = new Promise((resolve, reject) => {
+      loginUser(values.email, values.password)
+        .then((response) => {
+          resolve(response);
+          setOverlay(<OverlayOne />);
+          onOpen();
+          router.push('/home');
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('created', JSON.stringify(new Date()));
+          sessionStorage.setItem('id', response.data.data.id);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+
+    toast.promise(loginPromise, {
+      success: {
         title: `login successfully`,
-        status: 'success',
         position: 'top',
-        isClosable: true,
-      });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('created', JSON.stringify(new Date()));
-      localStorage.setItem('id', response.data.data.id);
-    } catch (error) {
-      toast({
-        title: `register failed`,
-        status: 'error',
+      },
+      error: {
+        title: `login failed`,
         position: 'top',
-        isClosable: true,
-      });
-    }
+      },
+      loading: {
+        title: 'Loading',
+        position: 'top',
+        description: 'Please wait while we create your account.',
+      },
+    });
   };
 
   const formik = useFormik({
@@ -136,6 +153,7 @@ export default function page() {
           <Image className="h-screen" src="/sound.svg" />
         </HStack>
       </Hide>
+      <ModalLoading onClose={onClose} isOpen={isOpen} overlay={overlay} />
     </HStack>
   );
 }

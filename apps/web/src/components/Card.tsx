@@ -1,8 +1,22 @@
-import { Heading, Box, Image, Text, Stack } from '@chakra-ui/react';
+import {
+  Heading,
+  Box,
+  Image,
+  Text,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import React from 'react';
+import ModalLoading from './ModalLoading';
+import { useRouter } from 'next/navigation';
 
 export default function Card(props: any) {
+  const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
+  const router = useRouter();
+
   const days = ['Sun', 'Mon', 'Tuey', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = [
     'January',
@@ -21,7 +35,14 @@ export default function Card(props: any) {
 
   const date = new Date(props.date);
   return (
-    <Link className="w-[300px] text-blueDark" href={`/detail/${props.id}`}>
+    <Box
+      className="w-[300px] text-blueDark cursor-pointer"
+      onClick={() => {
+        setOverlay(<OverlayOne />);
+        onOpen();
+        router.push(`/detail/${props.id}`);
+      }}
+    >
       <Image
         className="object-cover"
         src="/hero-landing.webp"
@@ -42,6 +63,7 @@ export default function Card(props: any) {
       <Text py={4} fontSize="lg">
         {props.location}
       </Text>
-    </Link>
+      <ModalLoading onClose={onClose} isOpen={isOpen} overlay={overlay} />
+    </Box>
   );
 }

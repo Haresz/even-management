@@ -8,23 +8,31 @@ import {
   MenuItem,
   MenuList,
   Button,
+  ModalOverlay,
+  useDisclosure,
+  Box,
 } from '@chakra-ui/react';
 import {
   Coin,
   Receipt,
   SealPercent,
   SignOut,
-  Ticket,
   UserCircle,
 } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import ModalLoading from './ModalLoading';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [isLogin, setLogin] = useState(false);
+  const OverlayOne = () => <ModalOverlay bg="rgba(0, 34, 77, 0.66)" />;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [overlay, setOverlay] = React.useState(<OverlayOne />);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     if (token && !isTokenExpired(token)) {
       setLogin(true);
@@ -32,7 +40,7 @@ export default function Navbar() {
   }, []);
 
   const isTokenExpired = (token: any) => {
-    const creationTime: any = localStorage.getItem('created');
+    const creationTime: any = sessionStorage.getItem('created');
     const expirationTime: any = new Date(creationTime + 60 * 60 * 1000);
 
     return expirationTime < Date.now();
@@ -54,7 +62,14 @@ export default function Navbar() {
 
       {isLogin ? (
         <HStack gap={8}>
-          <Link href={'/myticket'}>
+          <Box
+            className=" cursor-pointer"
+            onClick={() => {
+              setOverlay(<OverlayOne />);
+              onOpen();
+              router.push('/myticket');
+            }}
+          >
             <HStack>
               <Receipt size={32} />
               <Text fontSize="lg" fontWeight={'semibold'}>
@@ -62,7 +77,7 @@ export default function Navbar() {
                 Transaction
               </Text>
             </HStack>
-          </Link>
+          </Box>
           <Menu>
             <MenuButton aria-label="Options">
               <UserCircle size={38} />
@@ -83,7 +98,7 @@ export default function Navbar() {
                 </Text>
               </MenuItem>
               <hr />
-              <MenuItem>
+              <MenuItem onClick={() => sessionStorage.clear()}>
                 <SignOut size={32} />
                 <Text ml={3} fontSize="lg" fontWeight={'semibold'}>
                   {' '}
@@ -105,6 +120,7 @@ export default function Navbar() {
           </Link>
         </HStack>
       )}
+      <ModalLoading onClose={onClose} isOpen={isOpen} overlay={overlay} />
     </HStack>
   );
 }

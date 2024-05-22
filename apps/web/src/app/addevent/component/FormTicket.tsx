@@ -18,7 +18,7 @@ export default function FormTicket(props: { id: number; type: string }) {
 
   const actionAddTicket = async (values: any) => {
     if (props.type == 'unpaid') values.price = '0';
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     try {
       const response = await createTicket(
